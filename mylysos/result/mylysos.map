@@ -1,0 +1,284 @@
+ mylysos
+
+ Timestamp is 575a6748 (Fri Jun 10 16:07:52 2016)
+
+ Preferred load address is 00020000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00004788H .text                   CODE
+ 0002:00000000 00000c6fH .rdata                  DATA
+ 0002:00000c6f 00000000H .edata                  DATA
+ 0003:00000000 00000480H .data                   DATA
+ 0003:00000480 00003474H .bss                    DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:00000000       _EntryPoint16              00021000 f   entry.obj
+ 0001:0000001d       EntryPoint32               0002101d f   entry.obj
+ 0001:00000048       _WRITE_PORT_UCHAR          00021048 f   hal_asm.obj
+ 0001:00000058       _READ_PORT_UCHAR           00021058 f   hal_asm.obj
+ 0001:00000063       _HalpEnableInterrupt       00021063 f   hal_asm.obj
+ 0001:00000070       _HalTaskSwitch             00021070 f   hal_asm.obj
+ 0001:00000080       _CrtPrintf                 00021080 f   6845crt.obj
+ 0001:00000120       _CrtPrintTextXYWithAttr    00021120 f   6845crt.obj
+ 0001:00000540       _CrtInitializeDriver       00021540 f   6845crt.obj
+ 0001:00000560       _CrtClearScreen            00021560 f   6845crt.obj
+ 0001:000005b0       _CrtPrintText              000215b0 f   6845crt.obj
+ 0001:000005e0       _CrtGetCursorPos           000215e0 f   6845crt.obj
+ 0001:00000610       _FsInitializeModule        00021610 f   fatfs.obj
+ 0001:00000660       _FsGetFileList             00021660 f   fatfs.obj
+ 0001:000007d0       _FsOpenFile                000217d0 f   fatfs.obj
+ 0001:00000910       _FsCloseFile               00021910 f   fatfs.obj
+ 0001:00000940       _FsReadFile                00021940 f   fatfs.obj
+ 0001:00000bb0       _FddInitializeDriver       00021bb0 f   fdddrv.obj
+ 0001:00000c30       _Fdd_IRQ_Handler           00021c30 f   fdddrv.obj
+ 0001:00001090       _FddReadSector             00022090 f   fdddrv.obj
+ 0001:000011d0       _HalInitializeHal          000221d0 f   hal.obj
+ 0001:00001200       _HalSetupTSS               00022200 f   hal.obj
+ 0001:000012f0       _HalSetupTaskSwitchingEnv  000222f0 f   hal.obj
+ 0001:00001370       _HalSetupTaskLink          00022370 f   hal.obj
+ 0001:000013b0       _HalWriteTssIntoGdt        000223b0 f   hal.obj
+ 0001:00001490       _HalChangeTssBusyBit       00022490 f   hal.obj
+ 0001:00001d90       _HshInitializeShell        00022d90 f   hshell.obj
+ 0001:00002660       _KbdInitializeDriver       00023660 f   kbddrv.obj
+ 0001:000026f0       _KbdGetKey                 000236f0 f   kbddrv.obj
+ 0001:00002720       _Kbd_IRQ_Handler           00023720 f   kbddrv.obj
+ 0001:00002bc0       _KrnInitializeKernel       00023bc0 f   kernel.obj
+ 0001:00002c40       _MmkInitializeMemoryManager 00023c40 f   mmanager.obj
+ 0001:00002e70       _MmAllocateNonCachedMemory 00023e70 f   mmanager.obj
+ 0001:00002fd0       _MmFreeNonCachedMemory     00023fd0 f   mmanager.obj
+ 0001:000030b0       _GetTotalMemoryBlocks      000240b0 f   mmanager.obj
+ 0001:000030d0       _GetUsedMemoryBlocks       000240d0 f   mmanager.obj
+ 0001:000030f0       _GetMemoryBlockSize        000240f0 f   mmanager.obj
+ 0001:00003110       _mylysos_init              00024110 f   mylysos.obj
+ 0001:00003200       _PsShowTSWachdogClock      00024200 f   process.obj
+ 0001:00003230       _PskInitializeProcessManager 00024230 f   process.obj
+ 0001:000032d0       _PsCreateProcess           000242d0 f   process.obj
+ 0001:00003360       _PsCreateThread            00024360 f   process.obj
+ 0001:000034a0       _PsCreateIntThread         000244a0 f   process.obj
+ 0001:00003590       _PsSetThreadStatus         00024590 f   process.obj
+ 0001:000035b0       _PsGetCurrentThread        000245b0 f   process.obj
+ 0001:000035d0       _PsDeleteThread            000245d0 f   process.obj
+ 0001:00003e10       _PsCreateUserThread        00024e10 f   process.obj
+ 0001:00003ef0       _PsGetThreadStatus         00024ef0 f   process.obj
+ 0001:00003f10       _PsGetParentProcess        00024f10 f   process.obj
+ 0001:00003f30       _ShellCommand_ps           00024f30 f   process.obj
+ 0001:00004020       _memset                    00025020 f   string.obj
+ 0001:00004060       _strupr                    00025060 f   string.obj
+ 0001:000040c0       _strcmp                    000250c0 f   string.obj
+ 0001:00004120       _strlen                    00025120 f   string.obj
+ 0001:00004160       _memcpy                    00025160 f   string.obj
+ 0001:000041b0       _strrchr                   000251b0 f   string.obj
+ 0001:00004200       _strcpy                    00025200 f   string.obj
+ 0001:00004250       _strcat                    00025250 f   string.obj
+ 0001:000042b0       _SysInitializeSyscall      000252b0 f   syscall.obj
+ 0001:00004300       _SysGetSyscallStackPtr     00025300 f   syscall.obj
+ 0001:00004320       _SysGetSyscallStackSize    00025320 f   syscall.obj
+ 0001:00004420       _vsprintf                  00025420 f   vsprintf.obj
+ 0002:00000000       ??_C@_0CI@EAEBLLGL@FspLoadDirEntry?$CI?$CJ?5returned?5an?5er@ 00026000     fatfs.obj
+ 0002:00000028       ??_C@_0CD@KKIBFCFD@FspLoadFAT?$CI?$CJ?5returned?5an?5error?4?5@ 00026028     fatfs.obj
+ 0002:0000004c       ??_C@_0BH@DBHHHLIF@Reading?5FAT?5Table?4?4?4?$AN?6?$AA@ 0002604c     fatfs.obj
+ 0002:00000064       ??_C@_0CA@EIKHPAPI@Reading?5Directory?5Entries?4?4?4?5?$AN?6?$AA@ 00026064     fatfs.obj
+ 0002:00000084       ??_C@_0CH@MHIGPNEI@FddTurnOffMotor?$CI?$CJ?5returned?5an?5er@ 00026084     fdddrv.obj
+ 0002:000000ac       ??_C@_0BI@NMHEANFH@Halp_IRQ_HardDrive?$CI?$CJ?5?$AN?6?$AA@ 000260ac     hal.obj
+ 0002:000000c4       ??_C@_0BO@DKPJFPAC@Halp_IRQ_MathCoprocessor?$CI?$CJ?5?$AN?6?$AA@ 000260c4     hal.obj
+ 0002:000000e4       ??_C@_0BE@NEDDPGBJ@Halp_IRQ_Mouse?$CI?$CJ?5?$AN?6?$AA@ 000260e4     hal.obj
+ 0002:000000f8       ??_C@_0BC@IGOLJKOG@Halp_IRQ_VGA?$CI?$CJ?5?$AN?6?$AA@ 000260f8     hal.obj
+ 0002:0000010c       ??_C@_0BI@MCNHIJMG@Halp_IRQ_CMOSClock?$CI?$CJ?5?$AN?6?$AA@ 0002610c     hal.obj
+ 0002:00000124       ??_C@_0BD@BMGLEMCE@Halp_IRQ_LPT1?$CI?$CJ?5?$AN?6?$AA@ 00026124     hal.obj
+ 0002:00000138       ??_C@_0BD@CNIDFGLJ@Halp_IRQ_LPT2?$CI?$CJ?5?$AN?6?$AA@ 00026138     hal.obj
+ 0002:0000014c       ??_C@_0BD@PNONLAAJ@Halp_IRQ_COM1?$CI?$CJ?5?$AN?6?$AA@ 0002614c     hal.obj
+ 0002:00000160       ??_C@_0BD@MMAFKKJE@Halp_IRQ_COM2?$CI?$CJ?5?$AN?6?$AA@ 00026160     hal.obj
+ 0002:00000174       ??_C@_0BP@BPMNCKPI@Halp_IRQ_ReqFromSlave8259?$CI?$CJ?5?$AN?6?$AA@ 00026174     hal.obj
+ 0002:00000194       ??_C@_0BL@NHEAFIGN@Halp_ECT_MachineCheck?$CI?$CJ?5?$AN?6?$AA@ 00026194     hal.obj
+ 0002:000001b0       ??_C@_0BN@IIPPLJCI@Halp_ECT_AlignmentCheck?$CI?$CJ?5?$AN?6?$AA@ 000261b0     hal.obj
+ 0002:000001d0       ??_C@_0CB@BAMOPHKE@Halp_ECT_FloatingPointError?$CI?$CJ?5?$AN?6@ 000261d0     hal.obj
+ 0002:000001f4       ??_C@_0BI@ECFHJJPN@Halp_ECT_PageFault?$CI?$CJ?5?$AN?6?$AA@ 000261f4     hal.obj
+ 0002:0000020c       ??_C@_0CA@BNNEHHMP@Halp_ECT_GeneralProtection?$CI?$CJ?5?$AN?6?$AA@ 0002620c     hal.obj
+ 0002:0000022c       ??_C@_0BN@IPDIOMJP@Halp_ECT_StackException?$CI?$CJ?5?$AN?6?$AA@ 0002622c     hal.obj
+ 0002:0000024c       ??_C@_0CA@NKBGCIFH@Halp_ECT_SegmentNotPresent?$CI?$CJ?5?$AN?6?$AA@ 0002624c     hal.obj
+ 0002:0000026c       ??_C@_0BJ@PELGBAAP@Halp_ECT_InvalidTSS?$CI?$CJ?5?$AN?6?$AA@ 0002626c     hal.obj
+ 0002:00000288       ??_C@_0CB@KDIHIBHF@Halp_ECT_CoprocessorOverrun?$CI?$CJ?5?$AN?6@ 00026288     hal.obj
+ 0002:000002ac       ??_C@_0CB@LIGLLFBG@Halp_ECT_DeviceNotAvailable?$CI?$CJ?5?$AN?6@ 000262ac     hal.obj
+ 0002:000002d0       ??_C@_0BM@EDOCEHEB@Halp_ECT_InvaildOpcode?$CI?$CJ?5?$AN?6?$AA@ 000262d0     hal.obj
+ 0002:000002ec       ??_C@_0BF@GOILIIOG@Halp_ECT_BOUNDS?$CI?$CJ?5?$AN?6?$AA@ 000262ec     hal.obj
+ 0002:00000304       ??_C@_0BD@PJNACMJH@Halp_ECT_INTO?$CI?$CJ?5?$AN?6?$AA@ 00026304     hal.obj
+ 0002:00000318       ??_C@_0BJ@CHEGJKKD@Halp_ECT_Breakpoint?$CI?$CJ?5?$AN?6?$AA@ 00026318     hal.obj
+ 0002:00000334       ??_C@_0BC@EPIMJMAK@Halp_ECT_NMI?$CI?$CJ?5?$AN?6?$AA@ 00026334     hal.obj
+ 0002:00000348       ??_C@_0BN@LHNLHKKE@Halp_ECT_DebugException?$CI?$CJ?5?$AN?6?$AA@ 00026348     hal.obj
+ 0002:00000368       ??_C@_0BL@DCNBJOMK@Halp_ECT_DivideByZero?$CI?$CJ?5?$AN?6?$AA@ 00026368     hal.obj
+ 0002:00000384       ??_C@_0CP@DIODDKOF@HalpInitializeProcessor?$CI?$CJ?5return@ 00026384     hal.obj
+ 0002:000003b4       ??_C@_0CD@FBKHEGHB@Interrupt?5Service?5is?5installed?$CB?$CB@ 000263b4     hal.obj
+ 0002:000003d8       ??_C@_0CL@KJAKIFMC@HalpStartIntService?$CI?$CJ?5returned?5a@ 000263d8     hal.obj
+ 0002:00000404       ??_C@_0BP@OLPBBHME@SystemTimer?5is?5initialized?$CB?$CB?$AN?6?$AA@ 00026404     hal.obj
+ 0002:00000424       ??_C@_0CI@HNIFLDMK@HalpInitSysTimer?$CI?$CJ?5returned?5an?5e@ 00026424     hal.obj
+ 0002:0000044c       ??_C@_0BD@GMFGECEC@PIC?5is?5success?$CB?$CB?$AN?6?$AA@ 0002644c     hal.obj
+ 0002:00000460       ??_C@_0CD@GOIDGDAA@HalpInitPIC?$CI?$CJ?5returned?5an?5error?4@ 00026460     hal.obj
+ 0002:00000484       ??_C@_0BI@MIIPFAGL@A20?5line?5is?5success?$CB?$CB?$AN?6?$AA@ 00026484     hal.obj
+ 0002:0000049c       ??_C@_0CF@GHKHCIHI@HalpEnableA20?$CI?$CJ?5returned?5an?5erro@ 0002649c     hal.obj
+ 0002:000004c4       ??_C@_0CB@FJNLJOKK@bp?0?5?$CD1?30x?$CFx?0?5?$CD2?30x?$CFx?0?5?$CD3?30x?$CFx?5?$AN?6@ 000264c4     hal.obj
+ 0002:000004e8       ??_C@_0CB@LEODENJF@gp?0?5?$CD1?30x?$CFx?0?5?$CD2?30x?$CFx?0?5?$CD3?30x?$CFx?5?$AN?6@ 000264e8     hal.obj
+ 0002:0000050c       ??_C@_04HEDFJGEJ@FREE?$AA@ 0002650c     hshell.obj
+ 0002:00000514       ??_C@_02PNJEAGMK@PS?$AA@   00026514     hshell.obj
+ 0002:00000518       ??_C@_04KDPJLEDB@TYPE?$AA@ 00026518     hshell.obj
+ 0002:00000520       ??_C@_03DNALGGBA@DIR?$AA@  00026520     hshell.obj
+ 0002:00000524       ??_C@_06FDJJHOKF@TOGGLE?$AA@ 00026524     hshell.obj
+ 0002:0000052c       ??_C@_03MOABAAGA@VER?$AA@  0002652c     hshell.obj
+ 0002:00000530       ??_C@_03LPAMKNAD@CLS?$AA@  00026530     hshell.obj
+ 0002:00000534       ??_C@_04DOKPJKJF@HELP?$AA@ 00026534     hshell.obj
+ 0002:0000053c       ??_C@_02HAOIJKIC@?$CFc?$AA@ 0002653c     hshell.obj
+ 0002:00000540       ??_C@_04OHLLKNHH@A?3?2?$DO?$AA@ 00026540     hshell.obj
+ 0002:00000548       ??_C@_0CK@LBAJIGLI@FsInitializeModule?$CI?$CJ?5returned?5an@ 00026548     hshell.obj
+ 0002:00000578       ??_C@_0BEG@HPGKONKG@help?7?7?3?7View?5available?5commands?5@ 00026578     hshell.obj
+ 0002:000006c0       ??_C@_0KH@IFCACION@OS?5Version?7?7?3?5mylysOS?5OS?7?$CI?$CFs?$CJ?5?$AN?6@ 000266c0     hshell.obj
+ 0002:00000768       ??_C@_0BK@GGEDINEJ@1st?5released?4?52016?905?927?4?$AA@ 00026768     hshell.obj
+ 0002:00000784       ??_C@_0BL@HFOAKNFG@ERROE?3?5file?5open?5error?$CB?5?$AN?6?$AA@ 00026784     hshell.obj
+ 0002:000007a0       ??_C@_0CI@GACJHGPN@ERROR?5?3?5this?5is?5not?5executable?5f@ 000267a0     hshell.obj
+ 0002:000007c8       ??_C@_03JNNAEMKE@EXE?$AA@  000267c8     hshell.obj
+ 0002:000007cc       ??_C@_04EEHPFMA@?4EXE?$AA@ 000267cc     hshell.obj
+ 0002:000007d4       ??_C@_02PCIJFNDE@?$AN?6?$AA@ 000267d4     hshell.obj
+ 0002:000007d8       ??_C@_02DKCKIIND@?$CFs?$AA@ 000267d8     hshell.obj
+ 0002:000007dc       ??_C@_0BO@FNCEECAM@ERROR?3?5?5?8?$CFs?8?5is?5not?5exist?$CB?5?$AN?6?$AA@ 000267dc     hshell.obj
+ 0002:000007fc       ??_C@_0BO@BMMHEOJD@ERROR?5?3?5No?5selected?5files?4?5?$AN?6?$AA@ 000267fc     hshell.obj
+ 0002:0000081c       ??_C@_0BM@DNEELDPM@?7?7?7Total?5Directories?3?5?$CFd?5?$AN?6?$AA@ 0002681c     hshell.obj
+ 0002:00000838       ??_C@_0CN@CBIFEMAD@?7?7?7Total?5File?5Size?3?5?$CFd?5bytes?5?7?5?$CI@ 00026838     hshell.obj
+ 0002:00000868       ??_C@_0DA@LHPHMEJH@?$CF0d?9?$CF02d?9?$CF02d?5?7?5?$CF02d?3?$CF02d?5?$CFs?5?$CF7d@ 00026868     hshell.obj
+ 0002:00000898       ??_C@_05IFKLLJBC@?5?5?5?5?5?$AA@ 00026898     hshell.obj
+ 0002:000008a0       ??_C@_05FIBHJBBH@?$DMDIR?$DO?$AA@ 000268a0     hshell.obj
+ 0002:000008a8       ??_C@_04GPOGLGKJ@A?4M?4?$AA@ 000268a8     hshell.obj
+ 0002:000008b0       ??_C@_04DCGGAIJL@P?4M?4?$AA@ 000268b0     hshell.obj
+ 0002:000008b8       ??_C@_0BB@HHDOIDND@Process?5State?5?$AN?6?$AA@ 000268b8     hshell.obj
+ 0002:000008cc       ??_C@_0BH@GAOKPDIL@Available?3?5?$CFd?5Bytes?5?$AN?6?$AA@ 000268cc     hshell.obj
+ 0002:000008e4       ??_C@_0BE@ICJLNJDN@In?5use?3?5?$CFd?5Bytes?5?$AN?6?$AA@ 000268e4     hshell.obj
+ 0002:000008f8       ??_C@_0BP@DLHMLAOH@Total?5Memory?5Size?3?5?$CFd?5Bytes?5?$AN?6?$AA@ 000268f8     hshell.obj
+ 0002:00000918       ??_C@_0CN@JPBINMDN@SysInitializeSyscall?$CI?$CJ?5returned?5@ 00026918     kernel.obj
+ 0002:00000948       ??_C@_0DD@PGNILLPJ@PskInitializeProcessManager?$CI?$CJ?5re@ 00026948     kernel.obj
+ 0002:0000097c       ??_C@_0DC@HMPJPCFD@MmkInitializeMemoryManager?$CI?$CJ?5ret@ 0002697c     kernel.obj
+ 0002:000009b0       ??_C@_0CI@GFPEFDPE@HalInitializeHal?$CI?$CJ?5returned?5an?5e@ 000269b0     kernel.obj
+ 0002:000009d8       ??_C@_0CC@MPDKKHPO@Memory?5Manager?5is?5initialized?$CB?$CB?$AN@ 000269d8     mmanager.obj
+ 0002:000009fc       ??_C@_0CL@OPLLCJPO@MmpCreateMemPookBlk?$CI?$CJ?5returned?5a@ 000269fc     mmanager.obj
+ 0002:00000a28       ??_C@_0CK@BFFNBLEM@MmpCheckMemorySize?$CI?$CJ?5returned?5an@ 00026a28     mmanager.obj
+ 0002:00000a54       ??_C@_0BB@CINOICC@Booting?5Error?$CB?$AN?6?$AA@ 00026a54     mylysos.obj
+ 0002:00000a68       ??_C@_0CK@NNIAHEIK@HshInitializeShell?$CI?$CJ?5returned?5an@ 00026a68     mylysos.obj
+ 0002:00000a94       ??_C@_0DD@GHBOJMFM@Floppy?5Disk?5Driver?5is?5initialize@ 00026a94     mylysos.obj
+ 0002:00000ac8       ??_C@_0CL@LECLFJDL@FddInitializeDriver?$CI?$CJ?5returned?5a@ 00026ac8     mylysos.obj
+ 0002:00000af4       ??_C@_0DA@BAJDKHNK@Keyboard?5Driver?5is?5initialized?5s@ 00026af4     mylysos.obj
+ 0002:00000b24       ??_C@_0CL@BBHNNJJA@KbdInitializeDriver?$CI?$CJ?5returned?5a@ 00026b24     mylysos.obj
+ 0002:00000b50       ??_C@_0CL@EKIIKDMP@KrnInitializeKernel?$CI?$CJ?5returned?5a@ 00026b50     mylysos.obj
+ 0002:00000b7c       ??_C@_0BC@CPDHJIFL@Halting?5system?4?$AN?6?$AA@ 00026b7c     mylysos.obj
+ 0002:00000b90       ??_C@_0CO@KFBIJEKH@PspCreateSystemProcess?$CI?$CJ?5returne@ 00026b90     process.obj
+ 0002:00000bc0       ??_C@_0BE@JAMLPBLH@?7?5?5?5?7?7?5?$CFd?5?7?7?$CFs?5?5?5?$AN?6?$AA@ 00026bc0     process.obj
+ 0002:00000bd4       ??_C@_0BE@NNEDBPMM@?7?5?$CFd?5?7?7?5?5?5?7?7?$CFs?5?5?5?$AN?6?$AA@ 00026bd4     process.obj
+ 0002:00000be8       ??_C@_0N@LBIIPKLM@User?5Process?$AA@ 00026be8     process.obj
+ 0002:00000bf8       ??_C@_05OJBIAJFH@Shell?$AA@ 00026bf8     process.obj
+ 0002:00000c00       ??_C@_0L@DIBBAPFL@FDD?5Driver?$AA@ 00026c00     process.obj
+ 0002:00000c0c       ??_C@_0BA@ICNKOJCM@Keyboard?5Driver?$AA@ 00026c0c     process.obj
+ 0002:00000c1c       ??_C@_0BC@OPFNIKBF@Process?5Scheduler?$AA@ 00026c1c     process.obj
+ 0002:00000c30       ??_C@_0BE@FADMGMOH@?7PID?7?7TID?7?7CMD?5?5?5?$AN?6?$AA@ 00026c30     process.obj
+ 0002:00000c44       ??_C@_0CL@BMDCEDJF@SysSetupSysCallgate?$CI?$CJ?5returned?5a@ 00026c44     syscall.obj
+ 0003:00000000       _m_GdtrDesc                00027000     entry.obj
+ 0003:00000008       _m_GdtTable                00027008     entry.obj
+
+ entry point at        0001:00000000
+
+ Static symbols
+
+ 0001:00004450       _ffmt                      00025450 f   vsprintf.obj
+ 0001:00004340       _SyspSetupSysCallgate      00025340 f   syscall.obj
+ 0001:000043c0       _Sysp_SERVICE_CALL_MANAGER 000253c0 f   syscall.obj
+ 0001:00003450       _PspTaskEntryPoint         00024450 f   process.obj
+ 0001:00003600       _PspPushCuttingItem        00024600 f   process.obj
+ 0001:00003680       _PspGetNextProcessID       00024680 f   process.obj
+ 0001:000036b0       _PspGetNextThreadID        000246b0 f   process.obj
+ 0001:000036e0       _PspAddNewProcess          000246e0 f   process.obj
+ 0001:00003730       _PspAddNewThread           00024730 f   process.obj
+ 0001:00003780       _PspCreateSystemProcess    00024780 f   process.obj
+ 0001:00003940       _PspIdleThread             00024940 f   process.obj
+ 0001:00003970       _PspProcessCutterThread    00024970 f   process.obj
+ 0001:00003a70       _PspPopCuttingItem         00024a70 f   process.obj
+ 0001:00003af0       _PspThreadCutterThread     00024af0 f   process.obj
+ 0001:00003bf0       _PspSoftTaskSW             00024bf0 f   process.obj
+ 0001:00003c90       _PspSetupTaskSWEnv         00024c90 f   process.obj
+ 0001:00003d10       _PspFindNextThreadScheduled 00024d10 f   process.obj
+ 0001:00003dd0       _Psp_IRQ_SystemTimer       00024dd0 f   process.obj
+ 0001:000031c0       _halt                      000241c0 f   mylysos.obj
+ 0001:00002ca0       _MmpCheckMemorySize        00023ca0 f   mmanager.obj
+ 0001:00002d20       _MmpCreateMemPoolBlk       00023d20 f   mmanager.obj
+ 0001:00002e30       _MmpGetRequiredBlocksFromBytes 00023e30 f   mmanager.obj
+ 0001:00002f90       _MmpGetPoolAddrFromDescAddr 00023f90 f   mmanager.obj
+ 0001:00003060       _MmpGetDescAddrFromPoolAddr 00024060 f   mmanager.obj
+ 0001:00002780       _KbdpTranslatorThread      00023780 f   kbddrv.obj
+ 0001:00002940       _KbdpResetIndicator        00023940 f   kbddrv.obj
+ 0001:000029a0       _KbdpPopRawKeyData         000239a0 f   kbddrv.obj
+ 0001:00002a20       _KbdpPushRawKeyData        00023a20 f   kbddrv.obj
+ 0001:00002aa0       _KbdpPopUserKeyData        00023aa0 f   kbddrv.obj
+ 0001:00002b30       _KbdpPushUserKeyData       00023b30 f   kbddrv.obj
+ 0001:00001e10       _HshpMainThread            00022e10 f   hshell.obj
+ 0001:00001f60       _HshpPrintPrompt           00022f60 f   hshell.obj
+ 0001:00001f80       _HshpParser                00022f80 f   hshell.obj
+ 0001:000020e0       _Hshp_CMD_toggle           000230e0 f   hshell.obj
+ 0001:00002120       _Hshp_CMD_cls              00023120 f   hshell.obj
+ 0001:00002140       _Hshp_CMD_help             00023140 f   hshell.obj
+ 0001:00002170       _Hshp_CMD_ver              00023170 f   hshell.obj
+ 0001:000021a0       _Hshp_CMD_excute           000231a0 f   hshell.obj
+ 0001:00002320       _Hshp_CMD_type             00023320 f   hshell.obj
+ 0001:00002410       _Hshp_CMD_dir              00023410 f   hshell.obj
+ 0001:00002480       _Hshp_dir_callback         00023480 f   hshell.obj
+ 0001:000025b0       _Hshp_CMD_ps               000235b0 f   hshell.obj
+ 0001:000025e0       _Hshp_CMD_free             000235e0 f   hshell.obj
+ 0001:000014f0       _HalpInitializeProcessor   000224f0 f   hal.obj
+ 0001:000015b0       _HalpEnableA20             000225b0 f   hal.obj
+ 0001:000016d0       _HalpInitPIC               000226d0 f   hal.obj
+ 0001:00001770       _HalpInitSysTimer          00022770 f   hal.obj
+ 0001:000017d0       _Halp_ECT_DivideByZero     000227d0 f   hal.obj
+ 0001:000017f0       _Halp_ECT_DebugException   000227f0 f   hal.obj
+ 0001:00001810       _Halp_ECT_NMI              00022810 f   hal.obj
+ 0001:00001830       _Halp_ECT_Breakpoint       00022830 f   hal.obj
+ 0001:00001870       _Halp_ECT_INTO             00022870 f   hal.obj
+ 0001:00001890       _Halp_ECT_BOUNDS           00022890 f   hal.obj
+ 0001:000018b0       _Halp_ECT_InvaildOpcode    000228b0 f   hal.obj
+ 0001:000018d0       _Halp_ECT_DeviceNotAvailable 000228d0 f   hal.obj
+ 0001:000018f0       _Halp_ECT_DoubleFault      000228f0 f   hal.obj
+ 0001:00001910       _Halp_ECT_CoprocessorOverrun 00022910 f   hal.obj
+ 0001:00001930       _Halp_ECT_InvalidTSS       00022930 f   hal.obj
+ 0001:00001950       _Halp_ECT_SegmentNotPresent 00022950 f   hal.obj
+ 0001:00001970       _Halp_ECT_StackException   00022970 f   hal.obj
+ 0001:00001990       _Halp_ECT_GeneralProtection 00022990 f   hal.obj
+ 0001:000019e0       _Halp_ECT_PageFault        000229e0 f   hal.obj
+ 0001:00001a00       _Halp_ECT_FloatingPointError 00022a00 f   hal.obj
+ 0001:00001a20       _Halp_ECT_AlignmentCheck   00022a20 f   hal.obj
+ 0001:00001a40       _Halp_ECT_MachineCheck     00022a40 f   hal.obj
+ 0001:00001a60       _Halp_IRQ_Keyboard         00022a60 f   hal.obj
+ 0001:00001aa0       _Halp_IRQ_ReqFromSlave8259 00022aa0 f   hal.obj
+ 0001:00001ac0       _Halp_IRQ_COM2             00022ac0 f   hal.obj
+ 0001:00001ae0       _Halp_IRQ_COM1             00022ae0 f   hal.obj
+ 0001:00001b00       _Halp_IRQ_LPT2             00022b00 f   hal.obj
+ 0001:00001b20       _Halp_IRQ_FloppyDisk       00022b20 f   hal.obj
+ 0001:00001b60       _Halp_IRQ_LPT1             00022b60 f   hal.obj
+ 0001:00001b80       _Halp_IRQ_CMOSClock        00022b80 f   hal.obj
+ 0001:00001ba0       _Halp_IRQ_VGA              00022ba0 f   hal.obj
+ 0001:00001bc0       _Halp_IRQ_Mouse            00022bc0 f   hal.obj
+ 0001:00001be0       _Halp_IRQ_MathCoprocessor  00022be0 f   hal.obj
+ 0001:00001c00       _Halp_IRQ_HardDrive        00022c00 f   hal.obj
+ 0001:00001c20       _HalpStartIntService       00022c20 f   hal.obj
+ 0001:00000c50       _FddpTurnOffMotor          00021c50 f   fdddrv.obj
+ 0001:00000c80       _FddpJobProcessThread      00021c80 f   fdddrv.obj
+ 0001:00000ce0       _FddpReadWriteSector       00021ce0 f   fdddrv.obj
+ 0001:00000eb0       _FddpTurnOnMotor           00021eb0 f   fdddrv.obj
+ 0001:00000ee0       _FddpWriteFdcData          00021ee0 f   fdddrv.obj
+ 0001:00000f30       _FddpSetupDMA              00021f30 f   fdddrv.obj
+ 0001:00000fc0       _FddpPopJobItem            00021fc0 f   fdddrv.obj
+ 0001:00001100       _FddpPushJobItem           00022100 f   fdddrv.obj
+ 0001:000008b0       _Fsp_of_callback           000218b0 f   fatfs.obj
+ 0001:00000ab0       _FspLoadFAT                00021ab0 f   fatfs.obj
+ 0001:00000ae0       _FspLoadDirEntry           00021ae0 f   fatfs.obj
+ 0001:00000b10       _FspGetNextCluster         00021b10 f   fatfs.obj
+ 0001:000000c0       _CrtpPrintfFmt             000210c0 f   6845crt.obj
+ 0001:00000280       _CrtpGetNextVideoPtr       00021280 f   6845crt.obj
+ 0001:000002b0       _CrtpGetNextVideoPtrWithPos 000212b0 f   6845crt.obj
+ 0001:000002e0       _CrtpScrollOneLine         000212e0 f   6845crt.obj
+ 0001:00000350       _CrtpKeyLF                 00021350 f   6845crt.obj
+ 0001:000003d0       _CrtpKeyCR                 000213d0 f   6845crt.obj
+ 0001:00000420       _CrtpKeyBackspace          00021420 f   6845crt.obj
+ 0001:00000460       _CrtpUpdateCursorPosByPtr  00021460 f   6845crt.obj
+ 0001:000004b0       _CrtpSetCursorPos          000214b0 f   6845crt.obj
