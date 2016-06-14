@@ -1,0 +1,128 @@
+Microsoft (R) Macro Assembler Version 8.00.50727.42	    05/24/16 10:13:34
+hal_asm.asm						     Page 1 - 1
+
+
+						.386P
+						.MODEL FLAT
+						PUBLIC	_WRITE_PORT_UCHAR
+						PUBLIC	_HalpEnableInterrupt
+
+
+ = 00000030			SOFT_TASK_SW_INT_NUMBER equ 30h
+
+ 00000000			.DATA
+
+ 00000000			.CODE
+
+
+
+
+
+
+				;===============================================================================
+				; VOID WRITE_PORT_UCHAR(IN PUCHAR Port, IN UCHAR Value);
+				;===============================================================================
+ 00000000			_WRITE_PORT_UCHAR	PROC
+ 00000000  55			        push	ebp
+ 00000001  8B EC		        mov		ebp, esp
+ 00000003  52			        push	edx
+ 00000004  50			        push	eax
+
+ 00000005  8B 55 08		        mov		edx, [ebp+8]
+ 00000008  8A 45 0C		        mov		al, [ebp+12]
+ 0000000B  EE			        out		dx, al
+				        
+ 0000000C  58			        pop		eax
+ 0000000D  5A			        pop		edx
+ 0000000E  5D			        pop		ebp
+ 0000000F  C3			        ret
+ 00000010			_WRITE_PORT_UCHAR	ENDP
+
+
+				;===============================================================================
+				; VOID READ_PORT_UCHAR(IN PUCHAR Port);
+				;===============================================================================
+ 00000010			_READ_PORT_UCHAR	PROC
+ 00000010  55			        push	ebp
+ 00000011  8B EC		        mov		ebp, esp
+ 00000013  52			        push	edx
+
+ 00000014  8B 55 08		        mov		edx, [ebp+8]
+ 00000017  EC			        in		al, dx
+				        
+ 00000018  5A			        pop		edx
+ 00000019  5D			        pop		ebp
+ 0000001A  C3			        ret
+ 0000001B			_READ_PORT_UCHAR	ENDP
+
+
+				;===============================================================================
+				; VOID HalpEnableInterrupt(PIDTR_DESC idtr);
+				;===============================================================================
+ 0000001B			_HalpEnableInterrupt	PROC
+ 0000001B  55			        push	ebp
+ 0000001C  8B EC		        mov		ebp, esp
+ 0000001E  50			        push	eax
+
+ 0000001F  8B 45 08		        mov		eax, [ebp+8]
+ 00000022  0F 01 18		        lidt	fword ptr [eax]
+				        
+ 00000025  5A			        pop		edx
+ 00000026  5D			        pop		ebp
+ 00000027  C3			        ret
+ 00000028			_HalpEnableInterrupt	ENDP
+
+
+				;===============================================================================
+				; VOID HalTaskSwitch(VOID);
+				;===============================================================================
+ 00000028			_HalTaskSwitch	PROC
+ 00000028  CD 30		        int		SOFT_TASK_SW_INT_NUMBER
+ 0000002A  C3			        ret
+ 0000002B			_HalTaskSwitch	ENDP
+
+
+
+				        END
+Microsoft (R) Macro Assembler Version 8.00.50727.42	    05/24/16 10:13:34
+hal_asm.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000002B DWord	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+_HalTaskSwitch . . . . . . . . .	P Near	 00000028 _TEXT	Length= 00000003 Public
+_HalpEnableInterrupt . . . . . .	P Near	 0000001B _TEXT	Length= 0000000D Public
+_READ_PORT_UCHAR . . . . . . . .	P Near	 00000010 _TEXT	Length= 0000000B Public
+_WRITE_PORT_UCHAR  . . . . . . .	P Near	 00000000 _TEXT	Length= 00000010 Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+SOFT_TASK_SW_INT_NUMBER  . . . .	Number	 00000030h   
+
+	   0 Warnings
+	   0 Errors

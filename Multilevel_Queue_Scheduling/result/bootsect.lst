@@ -1,0 +1,652 @@
+     1                                  ;===============================================================================
+     2                                  ; bootsect.asm - for FAT12 disk filesystem.
+     3                                  ;===============================================================================
+     4                                  
+     5                                  	[BITS 16]
+     6                                  	ORG	0
+     7                                  	
+     8                                  	%include 'c16.mac'
+     1                              <1> ; NASM macro set to make interfacing to 16-bit programs easier -*- nasm -*-
+     2                              <1> 
+     3                              <1> 
+     4                              <1> 
+     5                              <1> %imacro proc 1			; begin a procedure definition
+     6                              <1> 
+     7                              <1> %push proc
+     8                              <1> 
+     9                              <1> 	  global %1
+    10                              <1> 
+    11                              <1> %1:	  push bp
+    12                              <1> 
+    13                              <1> 	  mov bp,sp
+    14                              <1> 
+    15                              <1> %ifdef FARCODE PASCAL		; arguments may start at bp+4 or bp+6
+    16                              <1> 
+    17                              <1> %assign %$arg 6
+    18                              <1> 
+    19                              <1> %define %$firstarg 6
+    20                              <1> 
+    21                              <1> %else
+    22                              <1> 
+    23                              <1> %assign %$arg 4
+    24                              <1> 
+    25                              <1> %define %$firstarg 4
+    26                              <1> 
+    27                              <1> %endif
+    28                              <1> 
+    29                              <1> %define %$procname %1
+    30                              <1> 
+    31                              <1> %endmacro
+    32                              <1> 
+    33                              <1> 
+    34                              <1> 
+    35                              <1> %imacro arg 0-1 2		; used with the argument name as a label
+    36                              <1> 
+    37                              <1> %00	  equ %$arg
+    38                              <1> 
+    39                              <1> 				; we could possibly be adding some
+    40                              <1> 
+    41                              <1> 				; debug information at this point...?
+    42                              <1> 
+    43                              <1> %assign %$arg %1+%$arg
+    44                              <1> 
+    45                              <1> %endmacro
+    46                              <1> 
+    47                              <1> 
+    48                              <1> 
+    49                              <1> %imacro endproc 0
+    50                              <1> 
+    51                              <1> %ifnctx proc
+    52                              <1> 
+    53                              <1> %error Mismatched `endproc'/`proc'
+    54                              <1> 
+    55                              <1> %else
+    56                              <1> 
+    57                              <1>           mov sp,bp
+    58                              <1> 
+    59                              <1>           pop bp
+    60                              <1> 
+    61                              <1> %ifdef PASCAL
+    62                              <1> 
+    63                              <1>           retf %$arg - %$firstarg
+    64                              <1> 
+    65                              <1> %elifdef FARCODE
+    66                              <1> 
+    67                              <1> 	  retf
+    68                              <1> 
+    69                              <1> %else
+    70                              <1> 
+    71                              <1> 	  retn
+    72                              <1> 
+    73                              <1> %endif
+    74                              <1> 
+    75                              <1> __end_%$procname:		; useful for calculating function size
+    76                              <1> 
+    77                              <1> %pop
+    78                              <1> 
+    79                              <1> %endif
+    80                              <1> 
+    81                              <1> %endmacro
+     9                                  
+    10                                  
+    11                                  ;===============================================================================
+    12                                  ; boot records (FAT12 compatible)
+    13                                  ;===============================================================================
+    14 00000000 EB3C                    	db		0ebh, 3ch				; jmp entry
+    15 00000002 90                      	db		90h						; nop		- for assembler independence
+    16                                  		
+    17 00000003 4D796F6B734F5320        	db		'MyoksOS '				; 8 bytes
+    18 0000000B 0002                    	dw		512						; bytes per sector
+    19 0000000D 01                      	db		1						; sectors per cluster
+    20 0000000E 0100                    	dw		1						; reserved sectors
+    21 00000010 02                      	db		2						; numbers of FAT
+    22 00000011 E000                    	dw		224						; entries of root directory
+    23 00000013 400B                    	dw		2880					; total sectors
+    24 00000015 F0                      	db		0f0h
+    25 00000016 0900                    	dw		9						; sectors per FAT
+    26 00000018 1200                    	dw		18						; sectors per track
+    27 0000001A 0200                    	dw		2						; heads
+    28 0000001C 0000                    	dw		0						; numbers of hidden sectors
+    29 0000001E 0000                    	dw		0
+    30 00000020 00000000                	dd		0
+    31 00000024 00                      	db		0						; disk driver number (A:0, C:2)
+    32 00000025 00                      	db		0
+    33 00000026 29                      	db		029h
+    34 00000027 00000000                	dd		0
+    35 0000002B 4D594F4B534F532042-     	db		'MYOKSOS BIN'
+    35 00000034 494E               
+    36 00000036 4641543132202020        	db		'FAT12   '
+    37                                  		
+    38                                  
+    39                                  ;===============================================================================
+    40                                  ; main
+    41                                  ;
+    42                                  ; * description - read carefully - *
+    43                                  ; Only "conventional memory" area(00000h~9ffffh) is available freely. First 1k
+    44                                  ; memory(from 000h~3ffh) is set aside for the "interrupt vector table". The area
+    45                                  ; from 400h to 4ffh(a total of 256 bytes) is set aside for the "BIOS data" area.
+    46                                  ; Memory from 500h to 5ffh(256 bytes) is set aside to be used for "DOS" parameters.
+    47                                  ; Locations 700h to 9ffffh are available to "ANY OS".
+    48                                  ;
+    49                                  ; But, we only use the area from 1000h to 9ffffh area(a total of 650kbytes).
+    50                                  ; first 512bytes(1000h~11ffh) is used for a copy of "boot sector". Next 4k memory
+    51                                  ; from(1200h~23ffh) is used for a copy of "FAT" table. The area from 2400h to
+    52                                  ; 3fffh(7kbytes) is used for "Directory Entry" table. Memory from 10000h to 1ffffh
+    53                                  ; (64kbytes) is used for the "stack" area. Finally, the area from 20000h to 9ffffh
+    54                                  ; (588kbytes) is set aside to be used for launching "MYOSKOS" image file.
+    55                                  ;===============================================================================
+    56                                  %define BOOTSEG		07c0h		; 7c00h
+    57                                  %define INITSEG		0100h		; 1000h
+    58                                  %define INITSS		01000h		; 10000h
+    59                                  %define INITSP		0ffffh
+    60                                  
+    61                                  %define	FATSEG		0120h		; 1200h
+    62                                  %define DIRSEG		0240h		; 2400h
+    63                                  %define LDRSEG		02000h		; 20000h ~ 9ffffh
+    64                                  
+    65                                  entry:
+    66 0000003E FA                      		cli
+    67 0000003F B80010                  		mov		ax, INITSS
+    68 00000042 8ED0                    		mov		ss, ax
+    69 00000044 BCFFFF                  		mov		sp, INITSP
+    70 00000047 FB                      		sti
+    71                                  		
+    72                                  		; re-load
+    73 00000048 FC                      		cld
+    74 00000049 B80001                  		mov		ax, INITSEG
+    75 0000004C 8EC0                    		mov		es, ax
+    76 0000004E 31FF                    		xor		di, di
+    77 00000050 B8C007                  		mov		ax, BOOTSEG
+    78 00000053 8ED8                    		mov		ds, ax
+    79 00000055 31F6                    		xor		si, si
+    80 00000057 B90001                  		mov		cx, 100h				; 256 * 2bytes(movsw) = 512 bytes
+    81 0000005A F3A5                    		repz	movsw
+    82                                  		
+    83 0000005C EA[6100]0001            		jmp		INITSEG:main
+    84                                  		
+    85                                  
+    86                                  ;===============================================================================
+    87                                  ; main procedure
+    88                                  ;===============================================================================
+    89                                  main:
+    90 00000061 B80001                  		mov		ax, INITSEG
+    91 00000064 8ED8                    		mov		ds, ax
+    92                                  		
+    93                                  		; init video
+    94 00000066 B80006                  		mov		ax, 0600h
+    95 00000069 B707                    		mov		bh, 07h
+    96 0000006B 31C9                    		xor		cx, cx
+    97 0000006D BA5018                  		mov		dx, 1850h		; row:24, column:80
+    98 00000070 CD10                    		int		10h				; reset window
+    99 00000072 B402                    		mov		ah, 02h
+   100 00000074 30FF                    		xor		bh, bh
+   101 00000076 31D2                    		xor		dx, dx
+   102 00000078 CD10                    		int		10h				; set cursor position onto the top-left
+   103                                  		
+   104                                  		; loading msg
+   105 0000007A 68[B301]                		push	msg_loading
+   106 0000007D E81901                  		call	msgout
+   107 00000080 83C402                  		add		sp, 2
+   108                                  		
+   109                                  		; reset disk system
+   110 00000083 30E4                    		xor		ah, ah
+   111 00000085 B200                    		mov		dl, 00h			; a:
+   112 00000087 CD13                    		int		13h
+   113                                  		
+   114                                  		; read FAT & Directory table
+   115 00000089 B91700                  		mov		cx, 9+14		; sizeof FAT sectors & Directory table
+   116 0000008C BB0000                  		mov		bx, 0000h		; start address of buffer in FATSEG
+   117 0000008F BA0A00                  		mov		dx, 0ah			; start address of FAT2
+   118                                  		
+   119                                  .read_fat_dir:	
+   120 00000092 53                      		push	bx
+   121 00000093 682001                  		push	FATSEG
+   122 00000096 52                      		push	dx
+   123 00000097 E8CC00                  		call	read_sector		; read sector one by one
+   124 0000009A 83C406                  		add		sp, 6
+   125 0000009D 09C0                    		or		ax, ax
+   126 0000009F 7503                    		jnz		.read_next_fat_dir			; check whether or not an error occured
+   127 000000A1 E88E00                  		call	sys_halt
+   128                                  
+   129                                  .read_next_fat_dir:
+   130 000000A4 42                      		inc		dx
+   131 000000A5 81C30002                		add		bx, 512
+   132 000000A9 E2E7                    		loop	.read_fat_dir	; read next sector
+   133                                  		
+   134                                  		; find Myosk os image file from directory table
+   135 000000AB B9E000                  		mov		cx, 224
+   136 000000AE BB0014                  		mov		bx, 1400h
+   137                                  		
+   138                                  .find_image:
+   139 000000B1 6A08                    		push	8
+   140 000000B3 53                      		push	bx
+   141 000000B4 68[E501]                		push	str_kernel
+   142 000000B7 E88A00                  		call	is_equal
+   143 000000BA 83C406                  		add		sp, 6
+   144 000000BD 09C0                    		or		ax, ax
+   145 000000BF 7508                    		jnz		.image_found
+   146 000000C1 83C320                  		add		bx, 32
+   147 000000C4 E2EB                    		loop	.find_image
+   148 000000C6 E86900                  		call	sys_halt		; no file found
+   149                                  		
+   150                                  .image_found:
+   151 000000C9 8B571A                  		mov		dx, word [bx+1ah]	; get cluster number
+   152 000000CC BB0020                  		mov		bx, LDRSEG			; initial segment value
+   153                                  		
+   154                                  .read_cluster:						; using bx(LDRSEG), dx(cluster)
+   155 000000CF 81FAF80F                		cmp		dx, 0ff8h
+   156 000000D3 7352                    		jae		.load_kernel
+   157                                  		
+   158 000000D5 68[CC01]                		push	msg_dot				; print progress
+   159 000000D8 E8BE00                  		call	msgout
+   160 000000DB 83C402                  		add		sp, 2
+   161                                  
+   162 000000DE 83C21F                  		add		dx, 01fh			; offset to real data area
+   163 000000E1 6A00                    		push	00h
+   164 000000E3 53                      		push	bx
+   165 000000E4 52                      		push	dx
+   166 000000E5 E87E00                  		call	read_sector
+   167 000000E8 83C406                  		add		sp, 6
+   168 000000EB 09C0                    		or		ax, ax
+   169 000000ED 7503                    		jnz		.increase_ldr_addr
+   170 000000EF E84000                  		call	sys_halt
+   171                                  		
+   172                                  .increase_ldr_addr:
+   173 000000F2 83EA1F                  		sub		dx, 01fh
+   174 000000F5 83C320                  		add		bx, 20h				; increase LDRSEG(512bytes)
+   175                                  		
+   176                                  .get_next_cluster:
+   177 000000F8 53                      		push	bx
+   178 000000F9 52                      		push	dx
+   179 000000FA BB0300                  		mov		bx, 3
+   180                                  		
+   181 000000FD 89D0                    		mov		ax, dx
+   182 000000FF F8                      		clc
+   183 00000100 D1D8                    		rcr		ax, 1
+   184 00000102 7211                    		jc		.odd_number
+   185                                  		
+   186                                  		; even number
+   187 00000104 F7E3                    		mul		bx
+   188 00000106 89C3                    		mov		bx, ax
+   189 00000108 8B870002                		mov		ax, word [bx+200h]		; 200h = DIR's offset from FAT2
+   190 0000010C 25FF0F                  		and		ax, 0fffh
+   191 0000010F 5A                      		pop		dx
+   192 00000110 5B                      		pop		bx
+   193 00000111 89C2                    		mov		dx, ax
+   194 00000113 EBBA                    		jmp		.read_cluster
+   195                                  		
+   196                                  .odd_number:
+   197 00000115 F7E3                    		mul		bx
+   198 00000117 89C3                    		mov		bx, ax
+   199 00000119 43                      		inc		bx
+   200 0000011A 8B870002                		mov		ax, word [bx+200h]
+   201 0000011E C1E804                  		shr		ax, 4
+   202 00000121 5A                      		pop		dx
+   203 00000122 5B                      		pop		bx
+   204 00000123 89C2                    		mov		dx, ax
+   205 00000125 EBA8                    		jmp		.read_cluster
+   206                                  		
+   207                                  .load_kernel:
+   208 00000127 FA                      		cli
+   209 00000128 B80020                  		mov		ax, LDRSEG
+   210 0000012B 8ED8                    		mov		ds, ax
+   211 0000012D EA00100020              		jmp		LDRSEG:1000h			; jump to MYoskOS
+   212                                  		
+   213                                  
+   214                                  ;===============================================================================
+   215                                  ; sys_halt
+   216                                  ;===============================================================================
+   217                                  proc	sys_halt
+   217                              <1> 
+   217                              <1> %push proc
+   217                              <1> 
+   217                              <1>  global %1
+   217                              <1> 
+   217 00000132 55                  <1> %1: push bp
+   217                              <1> 
+   217 00000133 89E5                <1>  mov bp,sp
+   217                              <1> 
+   217                              <1> %ifdef FARCODE PASCAL
+   217                              <1> 
+   217                              <1> %assign %$arg 6
+   217                              <1> 
+   217                              <1> %define %$firstarg 6
+   217                              <1> 
+   217                              <1> %else
+   217                              <1> 
+   217                              <1> %assign %$arg 4
+   217                              <1> 
+   217                              <1> %define %$firstarg 4
+   217                              <1> 
+   217                              <1> %endif
+   217                              <1> 
+   217                              <1> %define %$procname %1
+   217                              <1> 
+   218 00000135 68[CE01]                		push	msg_error
+   219 00000138 E85E00                  		call	msgout
+   220 0000013B 83C402                  		add		sp, 2
+   221                                  		
+   222                                  .infinate:
+   223 0000013E EBFE                    		jmp		.infinate
+   224                                  endproc
+   224                              <1> 
+   224                              <1> %ifnctx proc
+   224                              <1> 
+   224                              <1> %error Mismatched `endproc'/`proc'
+   224                              <1> 
+   224                              <1> %else
+   224                              <1> 
+   224 00000140 89EC                <1>  mov sp,bp
+   224                              <1> 
+   224 00000142 5D                  <1>  pop bp
+   224                              <1> 
+   224                              <1> %ifdef PASCAL
+   224                              <1> 
+   224                              <1>  retf %$arg - %$firstarg
+   224                              <1> 
+   224                              <1> %elifdef FARCODE
+   224                              <1> 
+   224                              <1>  retf
+   224                              <1> 
+   224                              <1> %else
+   224                              <1> 
+   224 00000143 C3                  <1>  retn
+   224                              <1> 
+   224                              <1> %endif
+   224                              <1> 
+   224                              <1> __end_%$procname:
+   224                              <1> 
+   224                              <1> %pop
+   224                              <1> 
+   224                              <1> %endif
+   224                              <1> 
+   225                                  
+   226                                  
+   227                                  ;===============================================================================
+   228                                  ; is_equal
+   229                                  ;
+   230                                  ; type : int is_equal(int first_str, int second_str, int count);
+   231                                  ; desc : if two strings are not euqal, return zero value
+   232                                  ;===============================================================================
+   233                                  proc	is_equal
+   233                              <1> 
+   233                              <1> %push proc
+   233                              <1> 
+   233                              <1>  global %1
+   233                              <1> 
+   233 00000144 55                  <1> %1: push bp
+   233                              <1> 
+   233 00000145 89E5                <1>  mov bp,sp
+   233                              <1> 
+   233                              <1> %ifdef FARCODE PASCAL
+   233                              <1> 
+   233                              <1> %assign %$arg 6
+   233                              <1> 
+   233                              <1> %define %$firstarg 6
+   233                              <1> 
+   233                              <1> %else
+   233                              <1> 
+   233                              <1> %assign %$arg 4
+   233                              <1> 
+   233                              <1> %define %$firstarg 4
+   233                              <1> 
+   233                              <1> %endif
+   233                              <1> 
+   233                              <1> %define %$procname %1
+   233                              <1> 
+   234 00000147 B80100                  		mov		ax, 1
+   235 0000014A 60                      		pusha
+   236                                  		
+   237                                  		; init
+   238 0000014B 8B7604                  		mov		si, word [bp+4]
+   239 0000014E 8B7E06                  		mov		di, word [bp+6]
+   240 00000151 8B4E08                  		mov		cx, word [bp+8]
+   241                                  		
+   242                                  		; proceed
+   243                                  .loop:
+   244 00000154 AC                      		lodsb
+   245 00000155 3A05                    		cmp		al, byte [di]
+   246 00000157 7506                    		jne		.different
+   247 00000159 47                      		inc		di
+   248 0000015A E2F8                    		loop	.loop
+   249                                  		
+   250 0000015C 61                      		popa
+   251 0000015D EB03                    		jmp		.out
+   252                                  
+   253                                  .different:
+   254 0000015F 61                      		popa
+   255 00000160 31C0                    		xor		ax, ax
+   256                                  .out:
+   257                                  endproc
+   257                              <1> 
+   257                              <1> %ifnctx proc
+   257                              <1> 
+   257                              <1> %error Mismatched `endproc'/`proc'
+   257                              <1> 
+   257                              <1> %else
+   257                              <1> 
+   257 00000162 89EC                <1>  mov sp,bp
+   257                              <1> 
+   257 00000164 5D                  <1>  pop bp
+   257                              <1> 
+   257                              <1> %ifdef PASCAL
+   257                              <1> 
+   257                              <1>  retf %$arg - %$firstarg
+   257                              <1> 
+   257                              <1> %elifdef FARCODE
+   257                              <1> 
+   257                              <1>  retf
+   257                              <1> 
+   257                              <1> %else
+   257                              <1> 
+   257 00000165 C3                  <1>  retn
+   257                              <1> 
+   257                              <1> %endif
+   257                              <1> 
+   257                              <1> __end_%$procname:
+   257                              <1> 
+   257                              <1> %pop
+   257                              <1> 
+   257                              <1> %endif
+   257                              <1> 
+   258                                  
+   259                                  ;===============================================================================
+   260                                  ; read_sector
+   261                                  ;
+   262                                  ; type : int read_sector(int sector_number, int es_value, int bx_value);
+   263                                  ; desc : sector_number - initial number is zero not one!
+   264                                  ;        if an error occurred, return zero value
+   265                                  ;===============================================================================
+   266                                  
+   267                                  %define SECTORS_PER_TRACK			18
+   268                                  %define SECTORS_OF_TWO_TRACKS		SECTORS_PER_TRACK*2
+   269                                  
+   270                                  proc	read_sector
+   270                              <1> 
+   270                              <1> %push proc
+   270                              <1> 
+   270                              <1>  global %1
+   270                              <1> 
+   270 00000166 55                  <1> %1: push bp
+   270                              <1> 
+   270 00000167 89E5                <1>  mov bp,sp
+   270                              <1> 
+   270                              <1> %ifdef FARCODE PASCAL
+   270                              <1> 
+   270                              <1> %assign %$arg 6
+   270                              <1> 
+   270                              <1> %define %$firstarg 6
+   270                              <1> 
+   270                              <1> %else
+   270                              <1> 
+   270                              <1> %assign %$arg 4
+   270                              <1> 
+   270                              <1> %define %$firstarg 4
+   270                              <1> 
+   270                              <1> %endif
+   270                              <1> 
+   270                              <1> %define %$procname %1
+   270                              <1> 
+   271 00000169 B80100                  		mov		ax, 1				; no error
+   272 0000016C 60                      		pusha
+   273                                  		
+   274                                  		; init variables.
+   275                                  .init:
+   276 0000016D 8B4604                  		mov		ax, word [bp+4]
+   277                                  		
+   278                                  		; get "track" number.
+   279 00000170 B324                    		mov		bl, SECTORS_OF_TWO_TRACKS
+   280 00000172 F6F3                    		div		bl
+   281 00000174 88C5                    		mov		ch, al							; track
+   282 00000176 C1E808                  		shr		ax, 8
+   283                                  
+   284                                  		; get "head" number.
+   285 00000179 B312                    		mov		bl, SECTORS_PER_TRACK
+   286 0000017B F6F3                    		div		bl
+   287 0000017D 88C6                    		mov		dh, al							; head
+   288 0000017F 88E1                    		mov		cl, ah
+   289 00000181 FEC1                    		inc		cl								; add 1 to sector number.
+   290                                  
+   291                                  		; read sector
+   292 00000183 B80102                  		mov		ax, 0201h
+   293 00000186 B200                    		mov		dl, 00h							; floppy drive number
+   294 00000188 8E4606                  		mov		es, word [bp+6]
+   295 0000018B 8B5E08                  		mov		bx, word [bp+8]					; es:bx
+   296 0000018E CD13                    		int		13h
+   297                                  		
+   298 00000190 61                      		popa
+   299                                  		
+   300 00000191 7302                    		jnc		.out
+   301 00000193 31C0                    		xor		ax, ax							; error occurred
+   302                                  .out:
+   303                                  endproc
+   303                              <1> 
+   303                              <1> %ifnctx proc
+   303                              <1> 
+   303                              <1> %error Mismatched `endproc'/`proc'
+   303                              <1> 
+   303                              <1> %else
+   303                              <1> 
+   303 00000195 89EC                <1>  mov sp,bp
+   303                              <1> 
+   303 00000197 5D                  <1>  pop bp
+   303                              <1> 
+   303                              <1> %ifdef PASCAL
+   303                              <1> 
+   303                              <1>  retf %$arg - %$firstarg
+   303                              <1> 
+   303                              <1> %elifdef FARCODE
+   303                              <1> 
+   303                              <1>  retf
+   303                              <1> 
+   303                              <1> %else
+   303                              <1> 
+   303 00000198 C3                  <1>  retn
+   303                              <1> 
+   303                              <1> %endif
+   303                              <1> 
+   303                              <1> __end_%$procname:
+   303                              <1> 
+   303                              <1> %pop
+   303                              <1> 
+   303                              <1> %endif
+   303                              <1> 
+   304                                  
+   305                                  ;===============================================================================
+   306                                  ; msgout
+   307                                  ;
+   308                                  ; type : void msgout(word ptMsg);  // ptMsg is an word-size address.
+   309                                  ;===============================================================================
+   310                                  proc	msgout
+   310                              <1> 
+   310                              <1> %push proc
+   310                              <1> 
+   310                              <1>  global %1
+   310                              <1> 
+   310 00000199 55                  <1> %1: push bp
+   310                              <1> 
+   310 0000019A 89E5                <1>  mov bp,sp
+   310                              <1> 
+   310                              <1> %ifdef FARCODE PASCAL
+   310                              <1> 
+   310                              <1> %assign %$arg 6
+   310                              <1> 
+   310                              <1> %define %$firstarg 6
+   310                              <1> 
+   310                              <1> %else
+   310                              <1> 
+   310                              <1> %assign %$arg 4
+   310                              <1> 
+   310                              <1> %define %$firstarg 4
+   310                              <1> 
+   310                              <1> %endif
+   310                              <1> 
+   310                              <1> %define %$procname %1
+   310                              <1> 
+   311 0000019C 60                      		pusha
+   312                                  		
+   313 0000019D 8B7604                  		mov		si, WORD [bp+4]
+   314                                  .print:
+   315 000001A0 AC                      		lodsb
+   316 000001A1 08C0                    		or		al, al
+   317 000001A3 7409                    		jz		.out
+   318 000001A5 B40E                    		mov		ah, 0eh					; teletype output function
+   319 000001A7 BB0800                  		mov		bx, 08h					; back/fore ground color
+   320 000001AA CD10                    		int		10h
+   321 000001AC EBF2                    		jmp		.print
+   322                                  		
+   323                                  .out:
+   324 000001AE 61                      		popa
+   325                                  endproc
+   325                              <1> 
+   325                              <1> %ifnctx proc
+   325                              <1> 
+   325                              <1> %error Mismatched `endproc'/`proc'
+   325                              <1> 
+   325                              <1> %else
+   325                              <1> 
+   325 000001AF 89EC                <1>  mov sp,bp
+   325                              <1> 
+   325 000001B1 5D                  <1>  pop bp
+   325                              <1> 
+   325                              <1> %ifdef PASCAL
+   325                              <1> 
+   325                              <1>  retf %$arg - %$firstarg
+   325                              <1> 
+   325                              <1> %elifdef FARCODE
+   325                              <1> 
+   325                              <1>  retf
+   325                              <1> 
+   325                              <1> %else
+   325                              <1> 
+   325 000001B2 C3                  <1>  retn
+   325                              <1> 
+   325                              <1> %endif
+   325                              <1> 
+   325                              <1> __end_%$procname:
+   325                              <1> 
+   325                              <1> %pop
+   325                              <1> 
+   325                              <1> %endif
+   325                              <1> 
+   326                                  
+   327                                  
+   328                                  ;===============================================================================
+   329                                  ; datas used by boot procedure
+   330                                  ;===============================================================================
+   331 000001B3 4D594F4B534F53204C-     msg_loading	db	'MYOKSOS LOADING.........', 00h
+   331 000001BC 4F4144494E472E2E2E-
+   331 000001C5 2E2E2E2E2E2E00     
+   332 000001CC 2E00                    msg_dot		db	'.', 00h
+   333 000001CE 4572726F722120446F-     msg_error	db	'Error! Do Not Read....', 00h
+   333 000001D7 204E6F742052656164-
+   333 000001E0 2E2E2E2E00         
+   334 000001E5 4D594F4B534F532042-     str_kernel	db	'MYOKSOS BIN'
+   334 000001EE 494E               
+   335                                  
+   336                                  
+   337                                  ;===============================================================================
+   338                                  ; boot signature
+   339                                  ;===============================================================================
+   340 000001F0 00<rept>                times	1feh-($-$$)	db	00h
+   341 000001FE 55AA                    		dw		0aa55h	
