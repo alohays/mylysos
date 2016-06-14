@@ -27,7 +27,7 @@ typedef struct _THREAD_CONTROL_BLOCK {
 	TSS_32								thread_tss32;				/* TSS32 BLOCK */
 
 
-	SCHEDULE_PRIORITY					priority;					// ÇØ´ç ¾²·¹µåÀÇ ¿ì¼±¼øÀ§¸¦ ÀúÀå
+	SCHEDULE_PRIORITY					priority;					// í•´ë‹¹ ì“°ë ˆë“œì˜ ìš°ì„ ìˆœìœ„ë¥¼ ì €ìž¥
 
 } THREAD_CONTROL_BLOCK, *PTHREAD_CONTROL_BLOCK;
 
@@ -43,7 +43,7 @@ typedef struct _PROCESS_CONTROL_BLOCK {
 } PROCESS_CONTROL_BLOCK, *PPROCESS_CONTROL_BLOCK;
 
 
-//Process ¸®½ºÆ®¸¦ °ü¸®ÇÏ´Â ±¸Á¶Ã¼
+//Process ë¦¬ìŠ¤íŠ¸ë¥¼ ê´€ë¦¬í•˜ëŠ” êµ¬ì¡°ì²´
 typedef struct _PROCESS_MANAGER_BLOCK {
 	DWORD								process_count;				/* number of processes */
 	DWORD								next_process_id;			/* next prodess id */
@@ -52,7 +52,7 @@ typedef struct _PROCESS_MANAGER_BLOCK {
 } PROCESS_MANAGER_BLOCK, *PPROCESS_MANAGER_BLOCK;
 
 
-//½Ã½ºÅÛ¿¡¼­ Á¦°ÅÇØ¾ßÇÏ´Â Process¿Í ThreadÀÇ ¸®½ºÆ®¿¡ ´ëÇÑ Á¤º¸¸¦ °ü¸®ÇÏ´Â ±¸Á¶Ã¼
+//ì‹œìŠ¤í…œì—ì„œ ì œê±°í•´ì•¼í•˜ëŠ” Processì™€ Threadì˜ ë¦¬ìŠ¤íŠ¸ì— ëŒ€í•œ ì •ë³´ë¥¼ ê´€ë¦¬í•˜ëŠ” êµ¬ì¡°ì²´
 typedef struct _CUTTING_LIST {
 
 	BYTE								count;
@@ -62,18 +62,18 @@ typedef struct _CUTTING_LIST {
 
 } CUTTING_LIST, *PCUTTING_LIST;
 
-// °úÁ¦1À» À§ÇÑ ÄÚµå Ãß°¡!!!!!!!!
+
 typedef struct _PRIORITY_QUEUE_DATA {
 	HANDLE								thread;
 	struct _PRIORITY_QUEUE_DATA			*next;
 } PRIORITY_QUEUE_DATA;
 
-// ¸ÖÆ¼·¹º§ Å¥ ½ºÄÉÁÙ¸µÀ» À§ÇÑ Å¥ ±¸Á¶Ã¼ »ý¼º
+// ë©€í‹°ë ˆë²¨ í ìŠ¤ì¼€ì¤„ë§ì„ ìœ„í•œ í êµ¬ì¡°ì²´ ìƒì„±
 
 typedef struct _PRIORITY_QUEUE {
-	int count;  // queue ¾È¿¡ ÀÖ´Â dataµéÀÇ ¼ö
-	PRIORITY_QUEUE_DATA *front;  // queue µ¥ÀÌÅÍ Áß °¡Àå ¾Õ
-	PRIORITY_QUEUE_DATA *end;  // queue µ¥ÀÌÅÍ Áß °¡Àå µÚ
+	int count;  // queue ì•ˆì— ìžˆëŠ” dataë“¤ì˜ ìˆ˜
+	PRIORITY_QUEUE_DATA *front;  // queue ë°ì´í„° ì¤‘ ê°€ìž¥ ì•ž
+	PRIORITY_QUEUE_DATA *end;  // queue ë°ì´í„° ì¤‘ ê°€ìž¥ ë’¤
 } PRIORITY_QUEUE;
 
 // !!!!!!!!
@@ -97,13 +97,13 @@ static PROCESS_MANAGER_BLOCK m_ProcMgrBlk;
 static CUTTING_LIST m_ProcessCuttingList;
 static CUTTING_LIST m_ThreadCuttingList;
 
-static BOOL m_bShowTSWatchdogClock; //¹Ù¶÷°³ºñ ¸ð¾ç
-static DWORD m_TickCount;	//½Ã½ºÅÛÀÇ Æ½ °ªÀ» ÀúÀåÇÏ´Â º¯¼ö
+static BOOL m_bShowTSWatchdogClock; //ë°”ëžŒê°œë¹„ ëª¨ì–‘
+static DWORD m_TickCount;	//ì‹œìŠ¤í…œì˜ í‹± ê°’ì„ ì €ìž¥í•˜ëŠ” ë³€ìˆ˜
 
-// °úÁ¦1À» À§ÇÑ ÄÚµå Ãß°¡!!!!!!!!
+
 static SCHEDULE_PRIORITY current_schedule_priority;
-static DWORD highT, normalT, lowT;  // °¢ ¿ì¼±¼øÀ§ º°·Î timeÀ» ¾ó¸¶³ª Â÷ÁöÇß´ÂÁö ÀúÀå
-static PRIORITY_QUEUE highQ, normalQ, lowQ;   // high, normal, lowÀÇ ¿ì¼±¼øÀ§ Å¥µé
+static DWORD highT, normalT, lowT;  // ê° ìš°ì„ ìˆœìœ„ ë³„ë¡œ timeì„ ì–¼ë§ˆë‚˜ ì°¨ì§€í–ˆëŠ”ì§€ ì €ìž¥
+static PRIORITY_QUEUE highQ, normalQ, lowQ;   // high, normal, lowì˜ ìš°ì„ ìˆœìœ„ íë“¤
 static BOOL PspPushScheduleData(PRIORITY_QUEUE *pQueue, HANDLE data);
 static BOOL PspPopScheduleData(PRIORITY_QUEUE *pQueue, HANDLE *pdata);
 // !!!!!!!!
@@ -113,7 +113,7 @@ static BOOL PspPopScheduleData(PRIORITY_QUEUE *pQueue, HANDLE *pdata);
 
 BOOL PskInitializeProcessManager(VOID)
 {
-	//¸ðµç º¯¼ö ÃÊ±âÈ­
+	//ëª¨ë“  ë³€ìˆ˜ ì´ˆê¸°í™”
 	m_ProcMgrBlk.process_count		= 0;
 	m_ProcMgrBlk.next_process_id	= 0;
 	m_ProcMgrBlk.pt_current_thread	= 0;
@@ -130,7 +130,7 @@ BOOL PskInitializeProcessManager(VOID)
 	m_bShowTSWatchdogClock			= TRUE;
 	m_TickCount						= 0;
 
-	// °úÁ¦1À» À§ÇÑ ÄÚµå Ãß°¡!!!!!!!!
+	
 	current_schedule_priority		= PRIORITY_HIGH;
 	
 	highQ.count = 0;
@@ -154,27 +154,27 @@ BOOL PskInitializeProcessManager(VOID)
 
 	return TRUE;
 }
-//Init ¾²·¹µåÀÇ ÇÚµé·¯ ÇÔ¼ö
+//Init ì“°ë ˆë“œì˜ í•¸ë“¤ëŸ¬ í•¨ìˆ˜
 static void PspTaskEntryPoint(void)
 {
 	PKSTART_ROUTINE start_routine;
 	HANDLE current_thread;
 	DWORD ret_value;
-	//ÇöÀç ½ÇÇàµÇ´Â threadÀÇ Ãâcb°¡Áö°í¿È
+	//í˜„ìž¬ ì‹¤í–‰ë˜ëŠ” threadì˜ ì¶œcbê°€ì§€ê³ ì˜´
 	current_thread = PsGetCurrentThread();
-	//tcbÀÇ start_routine ÄÝ¹éÇÔ¼ö¿¡ start_context Æ÷ÀÎÅÍ¸¦ ³Ñ°Ü¼­ ÄÝ¹é ÇÔ¼ö¸¦ È£Ãâ
+	//tcbì˜ start_routine ì½œë°±í•¨ìˆ˜ì— start_context í¬ì¸í„°ë¥¼ ë„˜ê²¨ì„œ ì½œë°± í•¨ìˆ˜ë¥¼ í˜¸ì¶œ
 	start_routine = PsGetThreadPtr(current_thread)->start_routine;
 	ret_value = start_routine(PsGetThreadPtr(current_thread)->start_context);
 	
-	//¾²·¹µåÀÇ »óÅÂ¸¦ THREAD_STATUS_TERMINATED·Î ¼³Á¤
+	//ì“°ë ˆë“œì˜ ìƒíƒœë¥¼ THREAD_STATUS_TERMINATEDë¡œ ì„¤ì •
 	PsGetThreadPtr(current_thread)->thread_status = THREAD_STATUS_TERMINATED;
-	//ÅÂ½ºÅ© ½ºÀ§Äª ÇÔ¼ö¸¦ È£Ãâ
+	//íƒœìŠ¤í¬ ìŠ¤ìœ„ì¹­ í•¨ìˆ˜ë¥¼ í˜¸ì¶œ
 	HalTaskSwitch();
 
 	while(1);
 }
 
-//ÇÁ·Î¼¼½º »ý¼º ÇÔ¼ö (PIDÇÒ´ç µî °ü¸®)
+//í”„ë¡œì„¸ìŠ¤ ìƒì„± í•¨ìˆ˜ (PIDí• ë‹¹ ë“± ê´€ë¦¬)
 KERNELAPI BOOL PsCreateProcess(OUT PHANDLE ProcessHandle)
 {
 	PPROCESS_CONTROL_BLOCK pProcess;
@@ -196,7 +196,7 @@ KERNELAPI BOOL PsCreateProcess(OUT PHANDLE ProcessHandle)
 }
 
 
-//¾²·¹µå »ý¼º ÇÔ¼ö
+//ì“°ë ˆë“œ ìƒì„± í•¨ìˆ˜
 KERNELAPI BOOL PsCreateThread(OUT PHANDLE ThreadHandle, IN HANDLE ProcessHandle, IN PKSTART_ROUTINE StartRoutine, 
 					 IN PVOID StartContext, IN DWORD StackSize, IN BOOL AutoDelete)
 {
@@ -213,22 +213,22 @@ KERNELAPI BOOL		PsCreateThreadPriority(OUT PHANDLE ThreadHandle, IN HANDLE Proce
 	PTHREAD_CONTROL_BLOCK pThread;
 	int *pStack;
 	
-	//¸Þ¸ð¸®ÇÒ´ç
+	//ë©”ëª¨ë¦¬í• ë‹¹
 	pThread = MmAllocateNonCachedMemory(sizeof(THREAD_CONTROL_BLOCK));
 	if(pThread == NULL) return FALSE;
-	//¾²·¹µå¿¡¼­ »ç¿ëÇÒ ½ºÅÃ ÇÒ´ç
+	//ì“°ë ˆë“œì—ì„œ ì‚¬ìš©í•  ìŠ¤íƒ í• ë‹¹
 	pStack  = MmAllocateNonCachedMemory(StackSize);
 	if(pStack == NULL) return FALSE;
 
-	//ºÎ¸ð ÇÁ·Î¼¼½ºÀÇ ÇÚµé ¼³Á¤
+	//ë¶€ëª¨ í”„ë¡œì„¸ìŠ¤ì˜ í•¸ë“¤ ì„¤ì •
 	pThread->parent_process_handle		= ProcessHandle;
-	//Thread id ¹× handle ÇÒ´ç
+	//Thread id ë° handle í• ë‹¹
 	pThread->thread_id					= PspGetNextThreadID(ProcessHandle);
 	pThread->thread_handle				= (HANDLE)pThread;
-	pThread->thread_status				= THREAD_STATUS_STOP; //Thread »óÅÂ¸¦ STOPÀ¸·Î ¼³Á¤
+	pThread->thread_status				= THREAD_STATUS_STOP; //Thread ìƒíƒœë¥¼ STOPìœ¼ë¡œ ì„¤ì •
 	pThread->auto_delete				= AutoDelete; 
 	pThread->pt_next_thread				= NULL;
-	//¾²·¹µå°¡ ½ÇÇàÇØ¾ß ÇÏ´Â ÇÔ¼ö(StartRoutine), ÇÔ¼ö¿¡ ³Ñ¾î°¡´Â ÀÎÀÚ(StartContext), ½ºÅÃ »çÀÌÁî ¼³Á¤
+	//ì“°ë ˆë“œê°€ ì‹¤í–‰í•´ì•¼ í•˜ëŠ” í•¨ìˆ˜(StartRoutine), í•¨ìˆ˜ì— ë„˜ì–´ê°€ëŠ” ì¸ìž(StartContext), ìŠ¤íƒ ì‚¬ì´ì¦ˆ ì„¤ì •
 	pThread->start_routine				= StartRoutine;
 	pThread->start_context				= StartContext;
 	pThread->pt_stack_base_address		= pStack;
@@ -237,7 +237,7 @@ KERNELAPI BOOL		PsCreateThreadPriority(OUT PHANDLE ThreadHandle, IN HANDLE Proce
 	pThread->priority					= Priority;
 
 
-	//PspAddNewThread ÇÔ¼ö¸¦ ÅëÇØ Process¿¡ »ý¼ºµÈ ¾²·¹µå¸¦ Ãß°¡
+	//PspAddNewThread í•¨ìˆ˜ë¥¼ í†µí•´ Processì— ìƒì„±ëœ ì“°ë ˆë“œë¥¼ ì¶”ê°€
 	if(!PspAddNewThread(ProcessHandle, (HANDLE)pThread)) return FALSE;
 
 	if(pThread->priority == PRIORITY_HIGH){
@@ -268,10 +268,10 @@ KERNELAPI BOOL PsCreateIntThread(OUT PHANDLE ThreadHandle, IN HANDLE ProcessHand
 	pThread->thread_id					= PspGetNextThreadID(ProcessHandle);
 	pThread->thread_handle				= (HANDLE)pThread;
 	pThread->thread_status				= THREAD_STATUS_STOP;
-	//PsCreateThreadÇÔ¼ö¿Í ´Ù¸£°Ô auto_delete°¡ false
+	//PsCreateThreadí•¨ìˆ˜ì™€ ë‹¤ë¥´ê²Œ auto_deleteê°€ false
 	pThread->auto_delete				= FALSE;
 	pThread->pt_next_thread				= NULL;
-	//PsCreateThreadÇÔ¼ö¿Í ´Ù¸£°Ô argumentÀÇ StartRoutineÀ» ¹Ù·Î ÇÒ´ç
+	//PsCreateThreadí•¨ìˆ˜ì™€ ë‹¤ë¥´ê²Œ argumentì˜ StartRoutineì„ ë°”ë¡œ í• ë‹¹
 	pThread->start_routine				= StartRoutine;
 	pThread->start_context				= StartContext;
 	pThread->pt_stack_base_address		= pStack;
@@ -284,7 +284,7 @@ KERNELAPI BOOL PsCreateIntThread(OUT PHANDLE ThreadHandle, IN HANDLE ProcessHand
 
 	return TRUE;
 }
-//¾²·¹µåÀÇ »óÅÂ¸¦ ¼³Á¤ÇÏ´Â ÇÔ¼ö
+//ì“°ë ˆë“œì˜ ìƒíƒœë¥¼ ì„¤ì •í•˜ëŠ” í•¨ìˆ˜
 KERNELAPI BOOL PsSetThreadStatus(HANDLE ThreadHandle, THREAD_STATUS Status)
 {
 	PsGetThreadPtr(ThreadHandle)->thread_status = Status;
@@ -292,19 +292,19 @@ KERNELAPI BOOL PsSetThreadStatus(HANDLE ThreadHandle, THREAD_STATUS Status)
 	return TRUE;
 }
 
-//ÇöÀç ÇÁ·Î¼¼½º¿¡¼­ ½ÇÇàµÇ°í ÀÖ´Â ¾²·¹µåÀÇ TCB¸¦ ¹ÝÈ¯ÇÏ´Â ÇÔ¼ö
+//í˜„ìž¬ í”„ë¡œì„¸ìŠ¤ì—ì„œ ì‹¤í–‰ë˜ê³  ìžˆëŠ” ì“°ë ˆë“œì˜ TCBë¥¼ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 KERNELAPI HANDLE PsGetCurrentThread(VOID)
 {
 	HANDLE thread;
 
 ENTER_CRITICAL_SECTION();
-	//m_ProcMgrBlkÀÇ pt_current_thread¸¦ ¹ÝÈ¯
+	//m_ProcMgrBlkì˜ pt_current_threadë¥¼ ë°˜í™˜
 	thread = (HANDLE)(m_ProcMgrBlk.pt_current_thread);
 EXIT_CRITICAL_SECTION();
 	return thread;
 }
 
-//´õ ÀÌ»ó ÇÊ¿äÇÏÁö ¾ÊÀº ¾²·¹µå¸¦ »èÁ¦ÇÏ±âÀ§ÇÑ ÇÔ¼ö
+//ë” ì´ìƒ í•„ìš”í•˜ì§€ ì•Šì€ ì“°ë ˆë“œë¥¼ ì‚­ì œí•˜ê¸°ìœ„í•œ í•¨ìˆ˜
 KERNELAPI BOOL PsDeleteThread(HANDLE ThreadHandle)
 {
 	return PspPushCuttingItem(&m_ThreadCuttingList, ThreadHandle);
@@ -317,7 +317,7 @@ static BOOL PspPopCuttingItem(CUTTING_LIST *pCuttingList, HANDLE *pItem)
 
 ENTER_CRITICAL_SECTION();
 	{
-		// Ä¿ÅÍ Å¥¿¡ Ä«¿îÅÍ Ã¼Å©
+		// ì»¤í„° íì— ì¹´ìš´í„° ì²´í¬
 		if(pCuttingList->count == 0){
 			bResult = FALSE;
 			goto $exit;
@@ -340,7 +340,7 @@ static BOOL PspPushCuttingItem(CUTTING_LIST *pCuttingList, HANDLE Item)
 
 ENTER_CRITICAL_SECTION();
 	{
-		// Ä¿ÅÍÅ¥¿¡ ³²Àº °ø°£ Ã¼Å©
+		// ì»¤í„°íì— ë‚¨ì€ ê³µê°„ ì²´í¬
 		if(pCuttingList->count == MAX_CUTTING_ITEM){
 			bResult = FALSE;
 			goto $exit;
@@ -358,7 +358,7 @@ EXIT_CRITICAL_SECTION();
 }
 
 
-//Process ID »ý¼º
+//Process ID ìƒì„±
 static DWORD PspGetNextProcessID(void)
 {
 	DWORD process_id;
@@ -370,7 +370,7 @@ EXIT_CRITICAL_SECTION();
 	return process_id;
 }
 
-//Thread ID »ý¼º
+//Thread ID ìƒì„±
 static DWORD PspGetNextThreadID(HANDLE ProcessHandle)
 {
 	DWORD thread_id;
@@ -382,7 +382,7 @@ EXIT_CRITICAL_SECTION();
 	return thread_id;
 }
 
-//»õ·Î¿î ÇÁ·Î¼¼½º¸¦ ³ÖÀ» °ø°£À» Ã£¾Æ¼­ »ý¼º
+//ìƒˆë¡œìš´ í”„ë¡œì„¸ìŠ¤ë¥¼ ë„£ì„ ê³µê°„ì„ ì°¾ì•„ì„œ ìƒì„±
 static BOOL PspAddNewProcess(HANDLE ProcessHandle)
 {
 	PPROCESS_CONTROL_BLOCK *pt_next_process;
@@ -398,7 +398,7 @@ EXIT_CRITICAL_SECTION();
 	return TRUE;
 }
 
-//»õ·Î¿î ¾²·¹µå¸¦ ³ÖÀ» °ø°£À» Ã£¾Æ¼­ »ý¼º
+//ìƒˆë¡œìš´ ì“°ë ˆë“œë¥¼ ë„£ì„ ê³µê°„ì„ ì°¾ì•„ì„œ ìƒì„±
 static BOOL PspAddNewThread(HANDLE ProcessHandle, HANDLE ThreadHandle)
 {
 	PTHREAD_CONTROL_BLOCK *pt_next_thread;
@@ -413,7 +413,7 @@ EXIT_CRITICAL_SECTION();
 
 	return TRUE;
 }
-//´ÙÀ½ ½ÇÇà °¡´ÉÇÑ ¾²·¹µå¸¦ Ã£±â À§ÇÑ ÇÔ¼ö
+//ë‹¤ìŒ ì‹¤í–‰ ê°€ëŠ¥í•œ ì“°ë ˆë“œë¥¼ ì°¾ê¸° ìœ„í•œ í•¨ìˆ˜
 static HANDLE PspFindNextThreadScheduled(void)
 {
 	PTHREAD_CONTROL_BLOCK	pt_thread;
@@ -443,7 +443,7 @@ static HANDLE PspFindNextThreadScheduled(void)
 	if(pQueue->front != NULL){
 		PspPopScheduleData(pQueue, &handle);
 		pt_thread = PsGetThreadPtr(handle);
-	} else if(pt_thread->thread_status == THREAD_STATUS_TERMINATED) // Å¥°¡ ºñ¾îÀÖ´Â »óÅÂ¿¡ ½ÇÇàÁßÀÌ´ø ¾²·¹µåµµ Á¾·áµÈ »óÅÂ
+	} else if(pt_thread->thread_status == THREAD_STATUS_TERMINATED) // íê°€ ë¹„ì–´ìžˆëŠ” ìƒíƒœì— ì‹¤í–‰ì¤‘ì´ë˜ ì“°ë ˆë“œë„ ì¢…ë£Œëœ ìƒíƒœ
 		pt_thread = NULL;
 
 	if(pt_thread == NULL) 
@@ -474,21 +474,21 @@ $find_process:
 }
 
 
-//ÅÂ½ºÅ© ½ºÀ§Äª ¹æ¹ý Áß ÇÏ³ª
+//íƒœìŠ¤í¬ ìŠ¤ìœ„ì¹­ ë°©ë²• ì¤‘ í•˜ë‚˜
 static void PspSetupTaskSWEnv(void)
 {
 	HANDLE current_thread, next_thread;
-	// ÇöÀç ½ÇÇàµÇ´Â ¾²·¹µå¸¦ °¡Á®¿È
+	// í˜„ìž¬ ì‹¤í–‰ë˜ëŠ” ì“°ë ˆë“œë¥¼ ê°€ì ¸ì˜´
 	current_thread = PsGetCurrentThread();
-	// ´ÙÀ½ ½ÇÇà°¡´ÉÇÑ ¾²·¹µå¸¦ Ã£´Â´Ù
+	// ë‹¤ìŒ ì‹¤í–‰ê°€ëŠ¥í•œ ì“°ë ˆë“œë¥¼ ì°¾ëŠ”ë‹¤
 	next_thread = PspFindNextThreadScheduled();
 
-	// ÇöÀç ¾²·¹µåÀÇ »óÅÂ¸¦ È®ÀÎÇÏ¿© Á¾·á»óÅÂÀÏ °æ¿ì ÇÁ·Î¼¼½º Á¦°Å 
+	// í˜„ìž¬ ì“°ë ˆë“œì˜ ìƒíƒœë¥¼ í™•ì¸í•˜ì—¬ ì¢…ë£Œìƒíƒœì¼ ê²½ìš° í”„ë¡œì„¸ìŠ¤ ì œê±° 
 	if(PsGetThreadPtr(current_thread)->thread_status == THREAD_STATUS_TERMINATED){
 		if(PsGetThreadPtr(current_thread)->auto_delete){
 			PsDeleteThread(current_thread);
 		}
-	} // ½ÇÇàÁßÀÎ »óÅÂÀÏ °æ¿ì, ´ÙÀ½ ½ºÄÉÁÙ¸µ ½Ã Àç°³µÉ ¼ö ÀÖµµ·Ï ½ÇÇà´ë±â »óÅÂ·Î º¯°æ - ´Ù½Ã ½ÇÇàµÉ ¼ö ÀÖÀ¸¹Ç·Î ÇØ´ç priority queue¿¡ ³Ö¾îÁØ´Ù
+	} // ì‹¤í–‰ì¤‘ì¸ ìƒíƒœì¼ ê²½ìš°, ë‹¤ìŒ ìŠ¤ì¼€ì¤„ë§ ì‹œ ìž¬ê°œë  ìˆ˜ ìžˆë„ë¡ ì‹¤í–‰ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½ - ë‹¤ì‹œ ì‹¤í–‰ë  ìˆ˜ ìžˆìœ¼ë¯€ë¡œ í•´ë‹¹ priority queueì— ë„£ì–´ì¤€ë‹¤
 	else if(PsGetThreadPtr(current_thread)->thread_status == THREAD_STATUS_RUNNING){
 		PsGetThreadPtr(current_thread)->thread_status = THREAD_STATUS_READY;
 		if(PsGetThreadPtr(current_thread)->priority == PRIORITY_HIGH)
@@ -499,7 +499,7 @@ static void PspSetupTaskSWEnv(void)
 			PspPushScheduleData(&lowQ, current_thread);
 	}
 
-	// ÅÂ½ºÅ© ½ºÀ§Äª
+	// íƒœìŠ¤í¬ ìŠ¤ìœ„ì¹­
 	if(current_thread != next_thread && next_thread != NULL){
 		HalWriteTssIntoGdt(&PsGetThreadPtr(next_thread)->thread_tss32, sizeof(TSS_32), TASK_SW_SEG, TRUE);
 		PsGetThreadPtr(current_thread)->thread_status = THREAD_STATUS_RUNNING;
@@ -507,8 +507,8 @@ static void PspSetupTaskSWEnv(void)
 }
 
 
-//IDLE ¾²·¹µåÀÇ ÇÚµé·¯ ÇÔ¼ö
-//°è¼ÓÇØ¼­ ÅÂ½ºÅ© ½ºÀ§Äª(HalTaskSwitch)À» ½Ãµµ
+//IDLE ì“°ë ˆë“œì˜ í•¸ë“¤ëŸ¬ í•¨ìˆ˜
+//ê³„ì†í•´ì„œ íƒœìŠ¤í¬ ìŠ¤ìœ„ì¹­(HalTaskSwitch)ì„ ì‹œë„
 static DWORD PspIdleThread(PVOID StartContext)
 {
 	while(1){
@@ -518,7 +518,7 @@ static DWORD PspIdleThread(PVOID StartContext)
 	return 0;
 }
 
-//Á¾·áµÈ ÇÁ·Î¼¼½ºÀÇ »èÁ¦
+//ì¢…ë£Œëœ í”„ë¡œì„¸ìŠ¤ì˜ ì‚­ì œ
 static DWORD PspProcessCutterThread(PVOID StartContext)
 {
 	HANDLE ProcessHandle;
@@ -531,7 +531,7 @@ static DWORD PspProcessCutterThread(PVOID StartContext)
 			continue;
 		}
 ENTER_CRITICAL_SECTION();
-	//»èÁ¦ÇÒ ÇÁ·Î¼¼½º°¡ ½Ã½ºÅÛÇÁ·Î¼¼½ºÀÎÁö È®ÀÎ
+	//ì‚­ì œí•  í”„ë¡œì„¸ìŠ¤ê°€ ì‹œìŠ¤í…œí”„ë¡œì„¸ìŠ¤ì¸ì§€ í™•ì¸
 	if(ProcessHandle == PsGetThreadPtr(PsGetCurrentThread())->parent_process_handle){
 		goto $exit;
 	}
@@ -539,25 +539,25 @@ ENTER_CRITICAL_SECTION();
 
 	pt_prev_process = pt_cur_process = &(m_ProcMgrBlk.pt_head_process);
 	while(*pt_cur_process != PsGetProcessPtr(ProcessHandle)){
-		//¸®½ºÆ® ³»¿¡¼­ ÇöÀç ÇÁ·Î¼¼½º°¡ ¸¶Áö¸· ÇÁ·Î¼¼½ºÀÏ °æ¿ì Á¾·á
+		//ë¦¬ìŠ¤íŠ¸ ë‚´ì—ì„œ í˜„ìž¬ í”„ë¡œì„¸ìŠ¤ê°€ ë§ˆì§€ë§‰ í”„ë¡œì„¸ìŠ¤ì¼ ê²½ìš° ì¢…ë£Œ
 		if((*pt_cur_process)->pt_next_process == NULL){
 			goto $exit;
 		}
 		pt_prev_process = pt_cur_process;
 		pt_cur_process = &((*pt_cur_process)->pt_next_process);
 	}
-	// ´ÙÀ½ ÇÁ·Î¼¼½º¸¦ ¹Þ¾Æ¿Â´Ù.
+	// ë‹¤ìŒ í”„ë¡œì„¸ìŠ¤ë¥¼ ë°›ì•„ì˜¨ë‹¤.
 	(*pt_prev_process)->pt_next_process = (*pt_cur_process)->pt_next_process;
 	m_ProcMgrBlk.process_count--;
 
-	// »èÁ¦ÇÒ ÇÁ·Î¼¼½º¸¦ Ã£¾Ò´Ù¸é ÇØ´ç ÇÁ·Î¼¼½º ³»¿¡ ¸ðµç ¾²·¹µå¿¡ ÇÒ´çµÈ ¸Þ¸ð¸® ÇØÁ¦
+	// ì‚­ì œí•  í”„ë¡œì„¸ìŠ¤ë¥¼ ì°¾ì•˜ë‹¤ë©´ í•´ë‹¹ í”„ë¡œì„¸ìŠ¤ ë‚´ì— ëª¨ë“  ì“°ë ˆë“œì— í• ë‹¹ëœ ë©”ëª¨ë¦¬ í•´ì œ
 	pt_cur_thread = &(PsGetProcessPtr(ProcessHandle)->pt_head_thread);
 	while(*pt_cur_thread != NULL){
 		MmFreeNonCachedMemory((PVOID)((*pt_cur_thread)->pt_stack_base_address));
 		MmFreeNonCachedMemory((PVOID)(*pt_cur_thread));
 		pt_cur_thread = &((*pt_cur_thread)->pt_next_thread);
 	}
-	// »èÁ¦ÇÒ ÇÁ·Î¼¼½º ÀÚÃ¼ ¸Þ¸ð¸®µµ ÇØÁ¦
+	// ì‚­ì œí•  í”„ë¡œì„¸ìŠ¤ ìžì²´ ë©”ëª¨ë¦¬ë„ í•´ì œ
 	MmFreeNonCachedMemory((PVOID)ProcessHandle);
 
 $exit:
@@ -568,33 +568,33 @@ EXIT_CRITICAL_SECTION();
 }
 
 
-//Á¾·áµÈ ¾²·¹µåÀÇ »èÁ¦
+//ì¢…ë£Œëœ ì“°ë ˆë“œì˜ ì‚­ì œ
 static DWORD PspThreadCutterThread(PVOID StartContext)
 {
 	HANDLE ProcessHandle, ThreadHandle;
 	PTHREAD_CONTROL_BLOCK *pt_prev_thread, *pt_cur_thread;
 
 	while(1){
-		//threadÀÇ cutting list È®ÀÎ
+		//threadì˜ cutting list í™•ì¸
 		if(!PspPopCuttingItem(&m_ThreadCuttingList, &ThreadHandle)){
 			HalTaskSwitch();
 			continue;
 		}
 ENTER_CRITICAL_SECTION();
 	ProcessHandle = PsGetThreadPtr(ThreadHandle)->parent_process_handle;
-	//»èÁ¦ÇÒ ¾²·¹µå°¡ ¼ÓÇØÀÖ´Â ÇÁ·Î¼¼½º°¡ ½Ã½ºÅÛ ÇÁ·Î¼¼½ºÀÎÁö È®ÀÎ
+	//ì‚­ì œí•  ì“°ë ˆë“œê°€ ì†í•´ìžˆëŠ” í”„ë¡œì„¸ìŠ¤ê°€ ì‹œìŠ¤í…œ í”„ë¡œì„¸ìŠ¤ì¸ì§€ í™•ì¸
 	if(ProcessHandle == PsGetThreadPtr(PsGetCurrentThread())->parent_process_handle){
 		goto $exit;
 	}
-	//TCB¿¡¼­ ¾²·¹µå ¼ö°¡ ¾øÀ» °æ¿ì 
+	//TCBì—ì„œ ì“°ë ˆë“œ ìˆ˜ê°€ ì—†ì„ ê²½ìš° 
 	if(PsGetProcessPtr(ProcessHandle)->thread_count == 0){
 		goto $exit;
 	}
-	// ¼ÓÇØÀÖ´Â ÇÁ·Î¼¼½º ³»¿¡¼­ ÇÑ°³ÀÇ ¾²·¹µå¸¸ Á¸Àç
+	// ì†í•´ìžˆëŠ” í”„ë¡œì„¸ìŠ¤ ë‚´ì—ì„œ í•œê°œì˜ ì“°ë ˆë“œë§Œ ì¡´ìž¬
 	else if (PsGetProcessPtr(ProcessHandle)->thread_count == 1){
 		PsGetProcessPtr(ProcessHandle)->pt_head_thread = NULL;
 	}
-	// µÎ°³ÀÇ ¾²·¹µå Á¸Àç
+	// ë‘ê°œì˜ ì“°ë ˆë“œ ì¡´ìž¬
 	else{
 		pt_prev_thread = pt_cur_thread = &(PsGetProcessPtr(ProcessHandle)->pt_head_thread);
 		while(*pt_cur_thread != PsGetThreadPtr(ThreadHandle)){
@@ -604,15 +604,15 @@ ENTER_CRITICAL_SECTION();
 			pt_prev_thread = pt_cur_thread;
 			pt_cur_thread = &((*pt_cur_thread)->pt_next_thread);
 		}
-		//´ÙÀ½ ¾²·¹µå Æ÷ÀÎÆ® °¡Á®¿Â´Ù
+		//ë‹¤ìŒ ì“°ë ˆë“œ í¬ì¸íŠ¸ ê°€ì ¸ì˜¨ë‹¤
 		(*pt_prev_thread)->pt_next_thread = (*pt_cur_thread)->pt_next_thread;
 	}
 	PsGetProcessPtr(ProcessHandle)->thread_count--;
 
 	if(PsGetThreadPtr(ThreadHandle)->pt_stack_base_address >= (int *)0x00200000)
-		// ½ºÅÃ¿µ¿ª ÇÒ´ç ÇØÁ¦
+		// ìŠ¤íƒì˜ì—­ í• ë‹¹ í•´ì œ
 		MmFreeNonCachedMemory((PVOID)(PsGetThreadPtr(ThreadHandle)->pt_stack_base_address));
-	//¾²·¹µå ÀÚÃ¼ ¸Þ¸ð¸® ÇØÁ¦
+	//ì“°ë ˆë“œ ìžì²´ ë©”ëª¨ë¦¬ í•´ì œ
 	MmFreeNonCachedMemory((PVOID)(PsGetThreadPtr(ThreadHandle)));
 
 $exit:
@@ -622,42 +622,42 @@ EXIT_CRITICAL_SECTION();
 	return 0;
 }
 
-//¼ÒÇÁÆ®¿þ¾î Interrupt ¾²·¹µåÀÇ ÇÚµé·¯ ÇÔ¼ö
+//ì†Œí”„íŠ¸ì›¨ì–´ Interrupt ì“°ë ˆë“œì˜ í•¸ë“¤ëŸ¬ í•¨ìˆ˜
 static DWORD PspSoftTaskSW(PVOID StartContext)
 {
 	int cnt=0, pos=0;
 	char *addr=(char *)TS_WATCHDOG_CLOCK_POS, status[] = {'-', '\\', '|', '/', '-', '\\', '|', '/'}; 
 
 	while(1){
-		//ÀÎÅÍ·´ ºÒ°¡
+		//ì¸í„°ëŸ½ ë¶ˆê°€
 		_asm cli
-		//½ÇÇàÈ­¸é¿¡ ¹Ù¶÷°³ºñ Ç¥½Ã
+		//ì‹¤í–‰í™”ë©´ì— ë°”ëžŒê°œë¹„ í‘œì‹œ
 		if(cnt++ >= TIMEOUT_PER_SECOND){
 			if(++pos > 7) pos = 0;
 			cnt = 0;
 			if(m_bShowTSWatchdogClock)
 				*addr = status[pos];
 		}
-		// ÅÂ½ºÅ© ½ºÀ§ÄªÇÏ´Â ÇÔ¼ö È£Ãâ
+		// íƒœìŠ¤í¬ ìŠ¤ìœ„ì¹­í•˜ëŠ” í•¨ìˆ˜ í˜¸ì¶œ
 		PspSetupTaskSWEnv();
-		// ÀÎÅÍ·´ Ã³¸® ½Ã¿¡ ¸ðµç Ã³¸®¸¦ ¿Ï·áÇÏ°í ´Ù½Ã ÅÂ½ºÅ©·Î º¹±Í
+		// ì¸í„°ëŸ½ ì²˜ë¦¬ ì‹œì— ëª¨ë“  ì²˜ë¦¬ë¥¼ ì™„ë£Œí•˜ê³  ë‹¤ì‹œ íƒœìŠ¤í¬ë¡œ ë³µê·€
 		_asm iretd
 	}
 
 	return 0;
 }
 
-//Å¸ÀÌ¸Ó ÀÎÅÍ·´Æ® ÇÚµé·¯ ÇÔ¼ö
+//íƒ€ì´ë¨¸ ì¸í„°ëŸ½íŠ¸ í•¸ë“¤ëŸ¬ í•¨ìˆ˜
 static DWORD Psp_IRQ_SystemTimer(PVOID StartContext)
 {
 	while(1){
 		_asm cli
-		// °úÁ¦1À» À§ÇÑ ÄÚµå Ãß°¡!!!!!!!!
-		// 10¹øÀÇ Å¸ÀÓ ÀÎÅÍ·´Æ® Áß 6¹øÀº high, 3¹øÀº normal, 1¹øÀº low·Î ¼öÇàÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù.
-		// ¼ø¼­´Â high normal low ¼øÀ¸·Î Å¥¿¡¼­ ²¨³»°£´Ù.
-		// ¿ì¼±¼øÀ§°¡ ³ôÀº Å¥µéºÎÅÍ È®ÀÎÀ» ÇÏ¸ç ¸ñÇ¥Çß´ø È½¼öº¸´Ù ÀûÀº ¼ö¸¦ ¼öÇà ÇßÀ¸¸é ±× ¼øÀ§¸¦ ¼öÇàÇØÁØ´Ù.
-		// high¿¡¼­ 3¹øÀ» ¼öÇàÇÑ µÚ Å¥°¡ ºñ¾îÀÖ´Â »óÅÂ¿¡¼­ normalÀ» 2¹ø ¼öÇàÇÏ´Ù°¡ high°¡ ´Ù½Ã µé¾î¿À¸é high¸¦ ´Ù½Ã ¼öÇàÇØÁØ´Ù´Â °ÍÀÌ´Ù.
-		m_TickCount++; // tickcount°ª 1¾¿ Áõ°¡
+		
+		// 10ë²ˆì˜ íƒ€ìž„ ì¸í„°ëŸ½íŠ¸ ì¤‘ 6ë²ˆì€ high, 3ë²ˆì€ normal, 1ë²ˆì€ lowë¡œ ìˆ˜í–‰í•  ìˆ˜ ìžˆë„ë¡ í•œë‹¤.
+		// ìˆœì„œëŠ” high normal low ìˆœìœ¼ë¡œ íì—ì„œ êº¼ë‚´ê°„ë‹¤.
+		// ìš°ì„ ìˆœìœ„ê°€ ë†’ì€ íë“¤ë¶€í„° í™•ì¸ì„ í•˜ë©° ëª©í‘œí–ˆë˜ íšŸìˆ˜ë³´ë‹¤ ì ì€ ìˆ˜ë¥¼ ìˆ˜í–‰ í–ˆìœ¼ë©´ ê·¸ ìˆœìœ„ë¥¼ ìˆ˜í–‰í•´ì¤€ë‹¤.
+		// highì—ì„œ 3ë²ˆì„ ìˆ˜í–‰í•œ ë’¤ íê°€ ë¹„ì–´ìžˆëŠ” ìƒíƒœì—ì„œ normalì„ 2ë²ˆ ìˆ˜í–‰í•˜ë‹¤ê°€ highê°€ ë‹¤ì‹œ ë“¤ì–´ì˜¤ë©´ highë¥¼ ë‹¤ì‹œ ìˆ˜í–‰í•´ì¤€ë‹¤ëŠ” ê²ƒì´ë‹¤.
+		m_TickCount++; // tickcountê°’ 1ì”© ì¦ê°€
 
 		if(highQ.count > 0 && highT < 6){
 			highT++;
@@ -669,7 +669,7 @@ static DWORD Psp_IRQ_SystemTimer(PVOID StartContext)
 			lowT++;
 			current_schedule_priority = PRIORITY_LOW;
 		} else{
-			// ¸ðµÎ ¹èÁ¤¹ÞÀº CPU Å¸ÀÓÀ» ¼öÇàÇÑ °æ¿ì·Î ´Ù½Ã ÃÊ±âÈ­ ÇØÁØ´Ù.
+			// ëª¨ë‘ ë°°ì •ë°›ì€ CPU íƒ€ìž„ì„ ìˆ˜í–‰í•œ ê²½ìš°ë¡œ ë‹¤ì‹œ ì´ˆê¸°í™” í•´ì¤€ë‹¤.
 			highT = 0;
 			normalT = 0;
 			lowT = 0;
@@ -682,8 +682,8 @@ static DWORD Psp_IRQ_SystemTimer(PVOID StartContext)
 				current_schedule_priority = PRIORITY_LOW;
 		}
 		// !!!!!!!!
-		PspSetupTaskSWEnv(); //ÅÂ½ºÅ© ½ºÀ§Äª
-		WRITE_PORT_UCHAR((PUCHAR)0x20, 0x20); //EOI½ÅÈ£¸¦ Àü¼Û
+		PspSetupTaskSWEnv(); //íƒœìŠ¤í¬ ìŠ¤ìœ„ì¹­
+		WRITE_PORT_UCHAR((PUCHAR)0x20, 0x20); //EOIì‹ í˜¸ë¥¼ ì „ì†¡
 
 		_asm iretd
 	}
@@ -691,24 +691,24 @@ static DWORD Psp_IRQ_SystemTimer(PVOID StartContext)
 	return 0;
 }
 
-//ÃÊ±â ÇÁ·Î¼¼½º¿Í ¾²·¹µåÀÇ »ý¼º°ú ¼³Á¤
+//ì´ˆê¸° í”„ë¡œì„¸ìŠ¤ì™€ ì“°ë ˆë“œì˜ ìƒì„±ê³¼ ì„¤ì •
 static BOOL PspCreateSystemProcess(void)
 {
 	HANDLE process_handle;
 	HANDLE init_thread_handle, idle_thread_handle, process_cutter_handle, thread_cutter_handle;
 	HANDLE tmr_thread_handle, sw_task_sw_handle;
 
-	//¸ÞÀÎ ÇÁ·Î¼¼½º¸¦ »ý¼ºÇØÁÖ´Â PSCreateProcess ÇÔ¼ö È£Ãâ
+	//ë©”ì¸ í”„ë¡œì„¸ìŠ¤ë¥¼ ìƒì„±í•´ì£¼ëŠ” PSCreateProcess í•¨ìˆ˜ í˜¸ì¶œ
 	if(!PsCreateProcess(&process_handle)) 
 		return FALSE;
 
-	//ÇÁ·Î¼¼½º¸¦ »ý¼ºÇÏ±â À§ÇØ º£ÀÌ½º°¡ µÉ ¸ÞÀÎ ¾²·¹µå(init ¾²·¹µå) »ý¼º 
+	//í”„ë¡œì„¸ìŠ¤ë¥¼ ìƒì„±í•˜ê¸° ìœ„í•´ ë² ì´ìŠ¤ê°€ ë  ë©”ì¸ ì“°ë ˆë“œ(init ì“°ë ˆë“œ) ìƒì„± 
 	if(!PsCreateThread(&init_thread_handle, process_handle, NULL, NULL, DEFAULT_STACK_SIZE, FALSE)) 
 		return FALSE;
 
-	//ÃÊ±â ¾²·¹µåÀÇ ¹é¸µÅ©(Prev-Link) ¼³Á¤
+	//ì´ˆê¸° ì“°ë ˆë“œì˜ ë°±ë§í¬(Prev-Link) ì„¤ì •
 	HalSetupTaskLink(&PsGetThreadPtr(init_thread_handle)->thread_tss32, TASK_SW_SEG);
-	//ÃÊ±â ¾²·¹µåÀÇ TSS¸¦ GDT³»¿¡ ¼³Á¤
+	//ì´ˆê¸° ì“°ë ˆë“œì˜ TSSë¥¼ GDTë‚´ì— ì„¤ì •
 	HalWriteTssIntoGdt(&PsGetThreadPtr(init_thread_handle)->thread_tss32, sizeof(TSS_32), INIT_TSS_SEG, FALSE);
 	_asm {
 		push	ax
@@ -718,22 +718,22 @@ static BOOL PspCreateSystemProcess(void)
 	}
 
 
-	//Interuupt thread ¼öÇà ½Ã Å¸ÀÌ¸Ó Ã³¸®¸¦ À§ÇÑ ¾²·¹µå »ý¼º 
+	//Interuupt thread ìˆ˜í–‰ ì‹œ íƒ€ì´ë¨¸ ì²˜ë¦¬ë¥¼ ìœ„í•œ ì“°ë ˆë“œ ìƒì„± 
 	if(!PsCreateIntThread(&tmr_thread_handle, process_handle, Psp_IRQ_SystemTimer, NULL, DEFAULT_STACK_SIZE))
 		return FALSE;
 	HalWriteTssIntoGdt(&PsGetThreadPtr(tmr_thread_handle)->thread_tss32, sizeof(TSS_32), TMR_TSS_SEG, FALSE);
-	//¼ÒÇÁÆ®¿þ¾î interrupt¸¦ À§ÇÑ interrupt thread »ý¼º
+	//ì†Œí”„íŠ¸ì›¨ì–´ interruptë¥¼ ìœ„í•œ interrupt thread ìƒì„±
 	if(!PsCreateIntThread(&sw_task_sw_handle, process_handle, PspSoftTaskSW, NULL, DEFAULT_STACK_SIZE))
 		return FALSE;
 	HalWriteTssIntoGdt(&PsGetThreadPtr(sw_task_sw_handle)->thread_tss32, sizeof(TSS_32), SOFT_TS_TSS_SEG, FALSE);
 	
-	//idle thread »ý¼º
+	//idle thread ìƒì„±
 	if(!PsCreateThread(&idle_thread_handle, process_handle, PspIdleThread, NULL, DEFAULT_STACK_SIZE, FALSE))
 		return FALSE;
 	PsSetThreadStatus(idle_thread_handle, THREAD_STATUS_RUNNING);
 	HalWriteTssIntoGdt(&PsGetThreadPtr(idle_thread_handle)->thread_tss32, sizeof(TSS_32), TASK_SW_SEG, TRUE);
 	m_ProcMgrBlk.pt_current_thread = idle_thread_handle;
-	//Á¾·áµÈ ÇÁ·Î¼¼½º¿Í ½º·¹µå¸¦ »èÁ¦ÇÏ´Â cutter¾²·¹µå
+	//ì¢…ë£Œëœ í”„ë¡œì„¸ìŠ¤ì™€ ìŠ¤ë ˆë“œë¥¼ ì‚­ì œí•˜ëŠ” cutterì“°ë ˆë“œ
 	if(!PsCreateThread(&process_cutter_handle, process_handle, PspProcessCutterThread, NULL, DEFAULT_STACK_SIZE, FALSE))
 		return FALSE;
 	PsSetThreadStatus(process_cutter_handle, THREAD_STATUS_READY);
@@ -745,8 +745,6 @@ static BOOL PspCreateSystemProcess(void)
 }
 
 
-
-// °úÁ¦1À» À§ÇÑ ÄÚµå Ãß°¡!!!!!!!!
 static BOOL PspPushScheduleData(PRIORITY_QUEUE *pQueue, HANDLE data){
 	BOOL bResult = TRUE;
 	PRIORITY_QUEUE_DATA *scheduleData;
@@ -780,7 +778,7 @@ ENTER_CRITICAL_SECTION();
 		if(pQueue->count == 0){
 			bResult = FALSE;
 			goto $exit;
-		} // Å¥°¡ ºñ¾îÀÖ´ÂÁö Ã¼Å©, ºñ¾îÀÖÀ¸¸é ÆË ºÒ°¡
+		} // íê°€ ë¹„ì–´ìžˆëŠ”ì§€ ì²´í¬, ë¹„ì–´ìžˆìœ¼ë©´ íŒ ë¶ˆê°€
 		
 		*pdata = pQueue->front->thread;
 
