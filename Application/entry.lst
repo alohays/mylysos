@@ -1,0 +1,74 @@
+Microsoft (R) Macro Assembler Version 8.00.50727.42	    06/10/16 15:47:51
+..\lib\entry.asm					     Page 1 - 1
+
+
+						.386P
+						.MODEL FLAT
+						
+						EXTERN	_main:near, _API_ExitProgram:near
+						PUBLIC	_AppEntryPoint
+						
+ = 00000048			SYSCALL_GATE	equ		48h
+
+ 00000000			.CODE
+				;===============================================================================
+				; Application Entry Point
+				;===============================================================================
+ 00000000			_AppEntryPoint		PROC	NEAR
+
+ 00000000  E8 00000000 E			call		_main
+ 00000005  E8 00000000 E			call		_API_ExitProgram
+						
+ 0000000A			$infinate:
+ 0000000A  EB FE				jmp			$infinate
+						
+ 0000000C			_AppEntryPoint		ENDP
+
+ 00000000			.DATA
+ 00000000 00000000		callgate	dd 00000000h
+ 00000004  0048						dw SYSCALL_GATE
+
+						END
+Microsoft (R) Macro Assembler Version 8.00.50727.42	    06/10/16 15:47:51
+..\lib\entry.asm					     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000006 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000000C DWord	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+_AppEntryPoint . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000000C Public
+  $infinate  . . . . . . . . . .	L Near	 0000000A _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+SYSCALL_GATE . . . . . . . . . .	Number	 00000048h   
+_API_ExitProgram . . . . . . . .	L Near	 00000000 FLAT	External
+_main  . . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+callgate . . . . . . . . . . . .	DWord	 00000000 _DATA	
+
+	   0 Warnings
+	   0 Errors

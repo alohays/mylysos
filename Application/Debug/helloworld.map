@@ -1,0 +1,26 @@
+ hello
+
+ Timestamp is 575a6297 (Fri Jun 10 15:47:51 2016)
+
+ Preferred load address is 00100000
+
+ Start         Length     Name                   Class
+ 0001:00000000 000000f9H .text                   CODE
+ 0002:00000000 00000041H .rdata                  DATA
+ 0002:00000041 00000000H .edata                  DATA
+ 0003:00000000 00000006H .data                   DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:00000000       _AppEntryPoint             00101000 f   entry.obj
+ 0001:00000010       _main                      00101010 f   main.obj
+ 0001:00000030       _memset                    00101030 f   mylysos_api.obj
+ 0001:00000070       _API_ExitProgram           00101070 f   mylysos_api.obj
+ 0001:000000a0       _API_PrintText             001010a0 f   mylysos_api.obj
+ 0002:00000000       ??_C@_0EB@PACHAKDK@Welcome?5to?5My?5Operation?5System?$CB?$CB@ 00102000     main.obj
+
+ entry point at        0001:00000000
+
+ Static symbols
+
+ 0001:000000d0       _internel_syscall          001010d0 f   mylysos_api.obj
